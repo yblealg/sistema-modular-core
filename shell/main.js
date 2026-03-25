@@ -1,6 +1,7 @@
 // shell/main.js
 const modules = [
-    { id: 'liquidador', name: 'Liquidador SNR', path: '../modules/liquidador.js' }
+   // Cambia esto:
+{ id: 'liquidador', name: 'Liquidador SNR', path: './modules/liquidador.js' }
 ];
 
 const menu = document.getElementById('menu');
