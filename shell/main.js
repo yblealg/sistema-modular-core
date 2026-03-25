@@ -1,25 +1,40 @@
 // shell/main.js
 const modules = [
-
-    // Quitamos el punto (.) inicial para que sea una ruta desde la raíz
-    { id: 'liquidador', name: 'Liquidador SNR', path: '/sistema-modular-core/modules/liquidador.js' }
+    { 
+        id: 'liquidador', 
+        name: 'Liquidador SNR', 
+        path: '../modules/liquidador.js' 
+    }
 ];
-
 
 const menu = document.getElementById('menu');
 const canvas = document.getElementById('app-canvas');
 
+// Función para cargar módulos dinámicamente
 async function loadModule(module) {
     try {
+        // Importante: La ruta se resuelve desde la ubicación de este archivo JS
         const mod = await import(module.path);
+        
+        // Limpiamos el tablero antes de cargar el nuevo módulo
+        canvas.innerHTML = ''; 
+        
+        // Ejecutamos la función de inicio del módulo
         mod.init(canvas);
+        
     } catch (error) {
-        canvas.innerHTML = `<h3>Error</h3><p>No se pudo cargar el módulo. Revisa la consola.</p>`;
-        console.error(error);
+        canvas.innerHTML = `
+            <div style="color: #e74c3c; padding: 20px; border: 1px solid #e74c3c; border-radius: 8px; background: #fdf2f2;">
+                <h3>Error de Conexión</h3>
+                <p>No se pudo cargar el componente "${module.name}".</p>
+                <small>Detalle: ${error.message}</small>
+            </div>
+        `;
+        console.error("Error cargando el módulo:", error);
     }
 }
 
-// Esta es la parte que "dibuja" los botones en el Menú SNR
+// Generar botones de menú automáticamente
 modules.forEach(mod => {
     const btn = document.createElement('button');
     btn.className = 'module-btn';
