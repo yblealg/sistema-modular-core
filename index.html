@@ -1,0 +1,30 @@
+// Este es el "Cerebro" del sistema
+const modules = [
+    { id: 'liquidador', name: 'Liquidador SNR', path: '../modules/liquidador.js' },
+    { id: 'peticiones', name: 'Gestor de Peticiones', path: '../modules/peticiones.js' }
+];
+
+const menu = document.getElementById('menu');
+const canvas = document.getElementById('app-canvas');
+
+// Función para cargar módulos sin recargar la página
+async function loadModule(module) {
+    try {
+        // Intentamos importar el código del módulo dinámicamente
+        const mod = await import(module.path);
+        // Ejecutamos la función de inicio del módulo
+        mod.init(canvas);
+    } catch (error) {
+        canvas.innerHTML = `<h3>Error</h3><p>El módulo "${module.name}" no está disponible o aún no ha sido creado.</p>`;
+        console.error("Error cargando el módulo:", error);
+    }
+}
+
+// Generar botones de menú automáticamente
+modules.forEach(mod => {
+    const btn = document.createElement('button');
+    btn.className = 'module-btn';
+    btn.innerText = mod.name;
+    btn.onclick = () => loadModule(mod);
+    menu.appendChild(btn);
+});
