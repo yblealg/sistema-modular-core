@@ -1,9 +1,15 @@
 // shell/main.js
+// shell/main.js
 const modules = [
     { 
         id: 'liquidador', 
         name: 'Liquidador SNR', 
         path: '../modules/liquidador.js' 
+    },
+    { 
+        id: 'peticiones', 
+        name: 'Gestor de Peticiones', 
+        path: '../modules/peticiones.js' 
     }
 ];
 
