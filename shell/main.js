@@ -1,8 +1,10 @@
 // shell/main.js
 const modules = [
-   // Cambia esto:
-{ id: 'liquidador', name: 'Liquidador SNR', path: './modules/liquidador.js' }
+
+    // Quitamos el punto (.) inicial para que sea una ruta desde la raíz
+    { id: 'liquidador', name: 'Liquidador SNR', path: '/sistema-modular-core/modules/liquidador.js' }
 ];
+
 
 const menu = document.getElementById('menu');
 const canvas = document.getElementById('app-canvas');
