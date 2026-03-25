@@ -4,7 +4,7 @@ const modules = [
     { 
         id: 'liquidador', 
         name: 'Liquidador SNR', 
-        path: '../modules/liquidador.js' 
+        path: '../modules/liquidador.js?v=1.1' // <--- Agrega el ?v=1.1 aquí
     },
     { 
         id: 'peticiones', 
