@@ -3,216 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Práctica SNR - ORIP Barranquilla</title>
+    <title>SNR Liquidador JSON - ORIP Quilla</title>
     <style>
-        /* 1. ESTILOS BASE Y ESTRUCTURA */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; margin: 0; height: 100vh; overflow: hidden; }
+        body { font-family: 'Segoe UI', sans-serif; display: flex; margin: 0; height: 100vh; background: #f4f7f6; }
+        #sidebar { width: 260px; background: #2c3e50; color: white; padding: 20px; }
+        #main { flex-grow: 1; padding: 40px; overflow-y: auto; }
         
-        #sidebar { width: 250px; background: #2c3e50; color: white; padding: 20px; flex-shrink: 0; }
-        #app-canvas { flex-grow: 1; padding: 30px; background: #f4f7f6; overflow-y: auto; }
-
-        /* 2. ESTILOS DEL PANEL DE ENTRADA */
-        .panel-entrada { 
-            background: white; padding: 20px; border-radius: 8px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 25px;
-        }
-        .form-group { display: flex; flex-direction: column; gap: 5px; }
-        .row { display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .row { display: flex; gap: 20px; align-items: flex-end; margin-bottom: 20px; }
+        .form-group { display: flex; flex-direction: column; flex: 1; }
         
-        input { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
-        input:focus { border-color: #1abc9c; outline: none; }
-        input:disabled { background: #f9f9f9; cursor: not-allowed; }
+        label { font-weight: 600; margin-bottom: 8px; color: #444; }
+        input, select { padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px; }
+        input:disabled { background: #f1f2f6; color: #a4b0be; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+        th { background: #34495e; color: white; padding: 15px; text-align: left; }
+        td { padding: 15px; border-bottom: 1px solid #eee; background: white; }
         
-        #lblNombreActo { 
-            padding: 10px; background: #eef2f3; border-radius: 4px; 
-            font-weight: bold; color: #34495e; min-width: 200px; display: inline-block;
-            border: 1px solid #dcdde1;
-        }
-
-        /* 3. ESTILOS DE LA TABLA */
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; margin-top: 10px; }
-        thead { background: #34495e; color: white; }
-        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
-        tfoot { background: #ecf0f1; font-weight: bold; font-size: 1.1em; }
-
-        /* 4. BOTONES */
-        .btn-principal { 
-            background: #1abc9c; color: white; border: none; padding: 11px 25px; 
-            border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s;
-        }
-        .btn-principal:hover { background: #16a085; }
-        .btn-delete { background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 3px; cursor: pointer; }
-
-        .module-btn { 
-            display: block; width: 100%; padding: 12px; margin-bottom: 10px;
-            background: #34495e; color: white; border: none; cursor: pointer; 
-            text-align: left; border-radius: 4px; border-left: 4px solid transparent;
-        }
-        .module-btn:hover { background: #1abc9c; border-left: 4px solid #fff; }
+        .btn-add { background: #1abc9c; color: white; border: none; padding: 13px 30px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-add:hover { background: #16a085; }
+        .total-box { margin-top: 20px; text-align: right; font-size: 22px; font-weight: bold; color: #27ae60; }
     </style>
 </head>
 <body>
 
-    <div id="sidebar">
-        <h2 style="border-bottom: 1px solid #555; padding-bottom: 10px;">Menú SNR</h2>
-        <div id="menu">
-            <button class="module-btn">🏠 Inicio</button>
-            <button class="module-btn" style="background: #1abc9c;">📑 Liquidación Registro</button>
-            <button class="module-btn">📁 Historial Turnos</button>
-            <button class="module-btn">⚙️ Configuración</button>
-        </div>
-        <p style="margin-top: 50px; font-size: 12px; color: #bdc3c7;">ORIP Barranquilla<br>V. 2026.03</p>
+<aside id="sidebar">
+    <h2>SNR Registro</h2>
+    <p>Módulo ORIP Barranquilla</p>
+    <hr style="opacity: 0.2">
+    <div style="margin-top: 20px;">
+        <small>Usuario: Auxiliar Administrativo</small>
     </div>
+</aside>
 
-    <div id="app-canvas">
-        <h1>Liquidador de Derechos de Registro</h1>
-        <p style="color: #666;">Ingrese los actos asociados al turno para calcular los derechos de la ORIP.</p>
-
-        <div class="panel-entrada">
-            <div class="row">
-                <div class="form-group">
-                    <label>Código Acto:</label>
-                    <input type="number" id="txtCodigoActo" placeholder="Ej: 125" style="width: 100px;" oninput="buscarActo()">
-                </div>
-
-                <div class="form-group" style="flex-grow: 1;">
-                    <label>Nombre del Acto Registral:</label>
-                    <span id="lblNombreActo">Esperando código...</span>
-                </div>
-
-                <div class="form-group">
-                    <label>Cuantía / Avalúo:</label>
-                    <input type="number" id="txtCuantia" disabled placeholder="Tarifa Fija">
-                </div>
-
-                <button class="btn-principal" onclick="agregarActoALista()">
-                    + Agregar Acto
-                </button>
+<main id="main">
+    <div class="card">
+        <h2>Liquidador Basado en JSON</h2>
+        <div class="row">
+            <div class="form-group" style="max-width: 150px;">
+                <label>Código Acto</label>
+                <input type="number" id="codigo" placeholder="Ej: 125">
             </div>
-            
-            <div id="divFoliosExtra" style="margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 10px;">
-                <label>Matrículas Inmobiliarias (Folios):</label>
-                <input type="number" id="txtFolios" value="1" min="1" style="width: 60px; margin-left: 10px;">
-                <small style="color: #7f8c8d;">(El 1er folio está incluido; adicionales generan cobro fijo)</small>
+            <div class="form-group">
+                <label>Nombre del Acto</label>
+                <input type="text" id="nombreActo" disabled placeholder="Busque un código...">
             </div>
-        </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Código y Acto Registral</th>
-                    <th>Base / Cuantía</th>
-                    <th>Derechos Registro</th>
-                    <th style="text-align: center;">Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="cuerpoTablaActos">
-                </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="2" style="text-align: right;">VALOR TOTAL A PAGAR:</td>
-                    <td id="totalLiquidacion" style="color: #27ae60; font-size: 1.2em;">$0</td>
-                    <td></td>
-                </tr>
-            </tfoot>
-        </table>
-
-        <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
-            <button class="btn-principal" style="background: #95a5a6;" onclick="location.reload()">Limpiar</button>
-            <button class="btn-principal" style="background: #2980b9;">Generar Turno y PDF</button>
+            <div class="form-group">
+                <label>Cuantía ($)</label>
+                <input type="number" id="cuantia" disabled placeholder="0">
+            </div>
+            <button class="btn-add" id="btnAgregar">Agregar</button>
         </div>
     </div>
 
-    <script>
-        // DICCIONARIO DE ACTOS (Simulando diccionario.js)
-        const actosSNR = {
-            "125": { nombre: "Compraventa", tipo: "proporcional", tarifa: 0.005 },
-            "126": { nombre: "Hipoteca", tipo: "proporcional", tarifa: 0.005 },
-            "168": { nombre: "Cancelación de Hipoteca", tipo: "fijo", valor: 23600 },
-            "411": { nombre: "Afectación a Vivienda Familiar", tipo: "exento", valor: 0 },
-            "101": { nombre: "Aporte a Sociedad", tipo: "proporcional", tarifa: 0.005 }
-        };
+    <table id="tablaActos">
+        <thead>
+            <tr>
+                <th>Código / Acto</th>
+                <th>Base Liquidación</th>
+                <th>Derechos Registro</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 
-        const VALOR_FOLIO_EXTRA = 23600; // Valor aproximado por folio adicional
-        let totalGeneral = 0;
+    <div class="total-box" id="displayTotal">Total: $0</div>
+</main>
 
-        function buscarActo() {
-            const cod = document.getElementById('txtCodigoActo').value;
-            const lbl = document.getElementById('lblNombreActo');
-            const inputCuantia = document.getElementById('txtCuantia');
-            
-            if (actosSNR[cod]) {
-                const acto = actosSNR[cod];
-                lbl.innerText = acto.nombre;
-                if (acto.tipo === "proporcional") {
-                    inputCuantia.disabled = false;
-                    inputCuantia.placeholder = "Ingrese valor";
-                } else {
-                    inputCuantia.disabled = true;
-                    inputCuantia.value = "";
-                    inputCuantia.placeholder = acto.tipo === "exento" ? "Exento" : "Valor Fijo";
-                }
-            } else {
-                lbl.innerText = "Código no registrado";
-                inputCuantia.disabled = true;
-                inputCuantia.value = "";
-            }
+<script>
+    // 3. Lógica de Negocio con JSON
+    const actosDB = {
+        "101": { "nombre": "Aporte a Sociedad", "tipo": "proporcional", "tarifa": 0.005 },
+        "125": { "nombre": "Compraventa", "tipo": "proporcional", "tarifa": 0.005 },
+        "126": { "nombre": "Hipoteca", "tipo": "proporcional", "tarifa": 0.005 },
+        "168": { "nombre": "Cancelación de Hipoteca", "tipo": "fijo", "valor": 23600 },
+        "411": { "nombre": "Afectación a Vivienda Familiar", "tipo": "exento", "valor": 0 }
+    };
+
+    let totalLiquidacion = 0;
+    const inputCodigo = document.getElementById('codigo');
+    const inputNombre = document.getElementById('nombreActo');
+    const inputCuantia = document.getElementById('cuantia');
+    const btnAgregar = document.getElementById('btnAgregar');
+    const tabla = document.querySelector('#tablaActos tbody');
+
+    // Buscar Acto al escribir código
+    inputCodigo.addEventListener('input', () => {
+        const data = actosDB[inputCodigo.value];
+        if (data) {
+            inputNombre.value = data.nombre;
+            inputCuantia.disabled = (data.tipo !== "proporcional");
+            if(data.tipo !== "proporcional") inputCuantia.value = "";
+        } else {
+            inputNombre.value = "";
+            inputCuantia.disabled = true;
+        }
+    });
+
+    // Agregar a la lista
+    btnAgregar.addEventListener('click', () => {
+        const cod = inputCodigo.value;
+        const data = actosDB[cod];
+        
+        if (!data) return alert("Código no válido");
+
+        let valorCalculado = 0;
+        const base = parseFloat(inputCuantia.value) || 0;
+
+        if (data.tipo === "proporcional") {
+            if (base <= 0) return alert("Ingrese cuantía válida");
+            valorCalculado = Math.round(base * data.tarifa);
+        } else {
+            valorCalculado = data.valor;
         }
 
-        function agregarActoALista() {
-            const cod = document.getElementById('txtCodigoActo').value;
-            const cuantia = parseFloat(document.getElementById('txtCuantia').value) || 0;
-            const folios = parseInt(document.getElementById('txtFolios').value) || 1;
-            
-            if (!actosSNR[cod]) return alert("Ingrese un código válido");
+        // Insertar fila
+        const row = tabla.insertRow();
+        row.innerHTML = `
+            <td><strong>${cod}</strong> - ${data.nombre}</td>
+            <td>$ ${base.toLocaleString()}</td>
+            <td>$ ${valorCalculado.toLocaleString()}</td>
+            <td><button onclick="eliminar(this, ${valorCalculado})" style="color:red; cursor:pointer; border:none; background:none;">Eliminar</button></td>
+        `;
 
-            const acto = actosSNR[cod];
-            let vlrDerechos = 0;
+        totalLiquidacion += valorCalculado;
+        document.getElementById('displayTotal').innerText = `Total: $${totalLiquidacion.toLocaleString()}`;
+        
+        // Reset
+        inputCodigo.value = "";
+        inputNombre.value = "";
+        inputCuantia.value = "";
+        inputCuantia.disabled = true;
+    });
 
-            // Lógica de liquidación
-            if (acto.tipo === "proporcional") {
-                if (cuantia <= 0) return alert("Ingrese la cuantía para este acto");
-                vlrDerechos = Math.round(cuantia * acto.tarifa);
-            } else {
-                vlrDerechos = acto.valor;
-            }
+    function eliminar(btn, valor) {
+        btn.closest('tr').remove();
+        totalLiquidacion -= valor;
+        document.getElementById('displayTotal').innerText = `Total: $${totalLiquidacion.toLocaleString()}`;
+    }
+</script>
 
-            // Sumar folios extra si hay más de 1
-            if (folios > 1) {
-                vlrDerechos += (folios - 1) * VALOR_FOLIO_EXTRA;
-            }
-
-            // Agregar a la tabla
-            const tabla = document.getElementById('cuerpoTablaActos');
-            const nuevaFila = document.createElement('tr');
-            
-            nuevaFila.innerHTML = `
-                <td><strong>${cod}</strong> - ${acto.nombre} ${folios > 1 ? '(incl. folios extra)' : ''}</td>
-                <td>$ ${cuantia.toLocaleString('es-CO')}</td>
-                <td>$ ${vlrDerechos.toLocaleString('es-CO')}</td>
-                <td style="text-align: center;">
-                    <button class="btn-delete" onclick="eliminarFila(this, ${vlrDerechos})">✕</button>
-                </td>
-            `;
-            
-            tabla.appendChild(nuevaFila);
-            
-            // Actualizar Total
-            totalGeneral += vlrDerechos;
-            document.getElementById('totalLiquidacion').innerText = `$ ${totalGeneral.toLocaleString('es-CO')}`;
-            
-            // Limpiar campos
-            document.getElementById('txtCodigoActo').value = "";
-            document.getElementById('txtCuantia').value = "";
-            document.getElementById('lblNombreActo').innerText = "Esperando código...";
-            document.getElementById('txtCuantia').disabled = true;
-        }
-
-        function eliminarFila(btn, valor) {
-            btn.closest('tr').remove();
-            totalGeneral -= valor;
-            document.getElementById('totalLiquidacion').innerText = `$ ${totalGeneral.toLocaleString('es-CO')}`;
-        }
-    </script>
 </body>
 </html>
