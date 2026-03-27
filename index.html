@@ -2,14 +2,56 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Sistema Práctica SNR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Práctica SNR - ORIP Barranquilla</title>
     <style>
-        body { font-family: sans-serif; display: flex; margin: 0; height: 100vh; }
-        #sidebar { width: 250px; background: #2c3e50; color: white; padding: 20px; }
-        #app-canvas { flex-grow: 1; padding: 40px; background: #f4f7f6; }
+        /* 1. ESTILOS BASE Y ESTRUCTURA (Layout) */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; margin: 0; height: 100vh; overflow: hidden; }
+        
+        /* Barra lateral (Sidebar) */
+        #sidebar { width: 250px; background: #2c3e50; color: white; padding: 20px; flex-shrink: 0; }
+        
+        /* Contenedor principal (Canvas) */
+        #app-canvas { flex-grow: 1; padding: 30px; background: #f4f7f6; overflow-y: auto; }
+
+        /* 2. ESTILOS DEL PANEL DE ENTRADA (Formulario) */
+        .panel-entrada { 
+            background: white; padding: 20px; border-radius: 8px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 25px;
+        }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .row { display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap; }
+        
+        input { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        input:disabled { background: #f9f9f9; cursor: not-allowed; }
+        
+        #lblNombreActo { 
+            padding: 10px; background: #eef2f3; border-radius: 4px; 
+            font-weight: bold; color: #34495e; min-width: 200px; display: inline-block;
+        }
+
+        /* 3. ESTILOS DE LA TABLA DE ACTOS */
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
+        thead { background: #34495e; color: white; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
+        tfoot { background: #ecf0f1; font-weight: bold; font-size: 1.1em; }
+
+        /* 4. BOTONES Y ACCIONES */
+        .btn-principal { 
+            background: #1abc9c; color: white; border: none; padding: 11px 25px; 
+            border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s;
+        }
+        .btn-principal:hover { background: #16a085; }
+
+        .btn-edit { background: #3498db; color: white; border: none; padding: 6px 12px; border-radius: 3px; cursor: pointer; margin-right: 5px; }
+        .btn-delete { background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 3px; cursor: pointer; }
+        .btn-edit:hover { background: #2980b9; }
+        .btn-delete:hover { background: #c0392b; }
+
         .module-btn { 
-            display: block; width: 100%; padding: 10px; margin-bottom: 10px;
-            background: #34495e; color: white; border: none; cursor: pointer; text-align: left;
+            display: block; width: 100%; padding: 12px; margin-bottom: 10px;
+            background: #34495e; color: white; border: none; cursor: pointer; 
+            text-align: left; border-radius: 4px;
         }
         .module-btn:hover { background: #1abc9c; }
     </style>
@@ -17,18 +59,75 @@
 <body>
 
     <div id="sidebar">
-        <h2>Menú SNR</h2>
+        <h2 style="border-bottom: 1px solid #555; padding-bottom: 10px;">Menú SNR</h2>
         <div id="menu">
-            </div>
+            <button class="module-btn">🏠 Inicio</button>
+            <button class="module-btn" style="background: #1abc9c;">📑 Liquidación Registro</button>
+            <button class="module-btn">📁 Historial Turnos</button>
+            <button class="module-btn">⚙️ Configuración</button>
+        </div>
     </div>
 
     <div id="app-canvas">
-        <h1>Bienvenido</h1>
-        <p>Selecciona un módulo en la izquierda para comenzar.</p>
+        <h1>Liquidador de Derechos de Registro</h1>
+        <p style="color: #666;">Ingrese los actos asociados al turno para calcular los derechos de la ORIP.</p>
+
+        <div class="panel-entrada">
+            <div class="row">
+                <div class="form-group">
+                    <label>Código Acto:</label>
+                    <input type="number" id="txtCodigoActo" placeholder="Ej: 125" style="width: 100px;">
+                </div>
+
+                <div class="form-group" style="flex-grow: 1;">
+                    <label>Nombre del Acto Registral:</label>
+                    <span id="lblNombreActo">Esperando código...</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Cuantía / Avalúo:</label>
+                    <input type="number" id="txtCuantia" disabled placeholder="Tarifa Fija">
+                </div>
+
+                <button class="btn-principal" onclick="agregarActoALista()">
+                    + Agregar Acto
+                </div>
+            </div>
+            
+            <div id="divFoliosExtra" style="display: none; margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 10px;">
+                <label>Matrículas Inmobiliarias Adicionales:</label>
+                <input type="number" id="txtFoliosExtra" value="0" style="width: 60px; margin-left: 10px;">
+                <small style="color: #7f8c8d;">(Se cobrará valor fijo por cada folio extra)</small>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Código y Acto Registral</th>
+                    <th>Base / Cuantía</th>
+                    <th>Derechos Registro</th>
+                    <th style="text-align: center;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="cuerpoTablaActos">
+                </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2" style="text-align: right;">VALOR TOTAL A PAGAR:</td>
+                    <td id="totalLiquidacion" style="color: #27ae60; font-size: 1.2em;">$0</td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+            <button class="btn-principal" style="background: #95a5a6;">Preliquidar</button>
+            <button class="btn-principal" style="background: #2980b9;">Generar Turno y PDF</button>
+        </div>
     </div>
 
-    <script type="module" src="./shell/main.js"></script>
-    <script src="js/diccionario.js"></script>
-    <script src="js/script.js"></script>
+    <script src="js/diccionario.js"></script> <script src="js/script.js"></script>    <script type="module" src="./shell/main.js"></script>
+
 </body>
 </html>
