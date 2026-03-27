@@ -63,7 +63,6 @@ export function init(container) {
                         <tbody id="tablaCuerpo"></tbody>
                     </table>
                 </div>
-                <button id="btnExportarExcel" style="margin-top:10px; padding:8px 15px; background:#34495e; color:white; border:none; cursor:pointer;">📥 Descargar Excel</button>
             </div>
         </div>
     `;
@@ -77,7 +76,6 @@ export function init(container) {
         let avaluo = parseFloat(document.getElementById('valAvaluo').value) || 0;
         let tipo = document.getElementById('tarifaTipo').value;
         
-        // Regla Art. 5: El mayor entre los dos
         let base = Math.max(acto, avaluo);
         let derechos = 0;
         let rangoText = "Rango 1";
@@ -100,7 +98,7 @@ export function init(container) {
                 rangoText = "Rango 5 (13.33/1000)";
             }
         } else if (tipo === "VIS") {
-            derechos = base * 0.005; // Tarifa VIS ejemplo
+            derechos = base * 0.005;
             rangoText = "Tarifa Especial VIS";
         } else {
             derechos = 0;
@@ -110,7 +108,6 @@ export function init(container) {
         let conservacion = derechos * 0.02;
         let total = derechos + conservacion;
 
-        // Mostrar en pantalla
         document.getElementById('resBase').innerText = `$ ${base.toLocaleString('es-CO')}`;
         document.getElementById('resRango').innerText = rangoText;
         document.getElementById('resDer').innerText = `$ ${Math.round(derechos).toLocaleString('es-CO')}`;
@@ -130,6 +127,8 @@ export function init(container) {
             turno: prefijoTurno,
             fecha: new Date().toLocaleString(),
             base: datos.base,
+            derechos: datos.derechos,
+            cons: datos.conservacion,
             total: datos.total
         });
 
@@ -137,20 +136,80 @@ export function init(container) {
         localStorage.setItem('ultimo_turno_snr', siguienteCorrelativo);
         
         alert(`Turno ${prefijoTurno} grabado con éxito.`);
-        location.reload(); // Para actualizar contador y tabla
+        location.reload();
+    };
+
+    // --- FUNCIÓN DE IMPRESIÓN PROFESIONAL ---
+    window.imprimirTurno = (reg) => {
+        const ventana = window.open('', '_blank');
+        ventana.document.write(`
+            <html>
+            <head>
+                <style>
+                    body { font-family: 'Courier New', Courier, monospace; font-size: 13px; padding: 20px; line-height: 1.3; }
+                    .center { text-align: center; font-weight: bold; }
+                    .bold { font-weight: bold; }
+                    hr { border: 0; border-top: 1px dashed #000; }
+                    table { width: 100%; margin: 15px 0; border-collapse: collapse; }
+                    th { border-bottom: 1px solid #000; text-align: left; }
+                </style>
+            </head>
+            <body>
+                <div class="center">
+                    OFICINA DE REGISTRO DE INSTRUMENTOS PÚBLICOS<br>
+                    BARRANQUILLA - NIT: 899999007-0<br>
+                    SOLICITUD REGISTRO DOCUMENTOS
+                </div>
+                <br>
+                Impreso el: ${new Date().toLocaleString()}<br>
+                <span class="bold">No. RADICACIÓN: ${reg.turno}</span><br>
+                NOMBRE DEL SOLICITANTE: ________________________________<br>
+                MATRICULAS: 040-__________
+                <hr>
+                <span class="bold">ACTOS A REGISTRAR:</span>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Cuantía</th>
+                            <th>Derecho</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ACTO CON CUANTÍA</td>
+                            <td>$ ${reg.base.toLocaleString('es-CO')}</td>
+                            <td>$ ${Math.round(reg.derechos).toLocaleString('es-CO')}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <hr>
+                VALOR DERECHOS: $ ${Math.round(reg.derechos).toLocaleString('es-CO')}<br>
+                Conservación documental (2%): $ ${Math.round(reg.cons).toLocaleString('es-CO')}<br>
+                <br>
+                <div class="bold" style="font-size: 15px;">
+                    TOTAL A PAGAR: $ ${Math.round(reg.total).toLocaleString('es-CO')}
+                </div>
+                <br><br>
+                <div class="center">Powered by Liquidador Experto SNR</div>
+                <script>window.onload = function() { window.print(); window.close(); }</script>
+            </body>
+            </html>
+        `);
+        ventana.document.close();
     };
 
     // --- RENDERIZAR TABLA ---
     const cargarTabla = () => {
         let historial = JSON.parse(localStorage.getItem('historial_liquidaciones') || "[]");
         const cuerpo = document.getElementById('tablaCuerpo');
-        cuerpo.innerHTML = historial.map(reg => `
+        cuerpo.innerHTML = historial.map((reg, index) => `
             <tr>
                 <td style="padding:8px; border:1px solid #ddd; font-family:monospace;">${reg.turno}</td>
                 <td style="padding:8px; border:1px solid #ddd;">$${reg.base.toLocaleString()}</td>
                 <td style="padding:8px; border:1px solid #ddd; font-weight:bold;">$${Math.round(reg.total).toLocaleString()}</td>
                 <td style="padding:8px; border:1px solid #ddd; text-align:center;">
-                    <button onclick="window.print()" style="cursor:pointer;">🖨️ PDF</button>
+                    <button onclick='window.imprimirTurno(${JSON.stringify(reg)})' style="cursor:pointer;">🖨️ PDF</button>
                 </td>
             </tr>
         `).join('');
@@ -158,8 +217,8 @@ export function init(container) {
 
     cargarTabla();
     
-    // Reloj
     setInterval(() => {
-        document.getElementById('reloj').innerText = new Date().toLocaleTimeString();
+        const reloj = document.getElementById('reloj');
+        if (reloj) reloj.innerText = new Date().toLocaleTimeString();
     }, 1000);
 }
