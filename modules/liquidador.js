@@ -150,3 +150,58 @@ function borrarLiquidacionTotal() {
         limpiarCampos();          // Coloca los inputs en cero y da foco al código
     }
 }
+
+function exportarPDF() {
+    if (listaActosAsociados.length === 0) {
+        alert("No hay actos para exportar.");
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Encabezado Institucional
+    doc.setFontSize(16);
+    doc.text("SUPERINTENDENCIA DE NOTARIADO Y REGISTRO", 105, 15, { align: 'center' });
+    doc.setFontSize(12);
+    doc.text("ORIP Barranquilla - Liquidación de Derechos de Registro", 105, 22, { align: 'center' });
+    doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 105, 29, { align: 'center' });
+
+    // Preparar los datos de la tabla
+    const columnas = ["Código", "Acto", "Base / Cant", "Total Item"];
+    const filas = [];
+    let granTotal = 0;
+
+    listaActosAsociados.forEach(item => {
+        granTotal += item.total;
+        filas.push([
+            item.codigo,
+            item.nombre,
+            item.cuantia > 0 ? `$${item.cuantia.toLocaleString('es-CO')}` : "N/A",
+            `$${item.total.toLocaleString('es-CO')}`
+        ]);
+    });
+
+    // Crear la tabla en el PDF
+    doc.autoTable({
+        startY: 35,
+        head: [columnas],
+        body: filas,
+        theme: 'striped',
+        headStyles: { fillColor: [44, 62, 80] } // Azul oscuro SNR
+    });
+
+    // Total al final de la tabla
+    const finalY = doc.lastAutoTable.finalY + 10;
+    doc.setFontSize(14);
+    doc.setFont(undefined, 'bold');
+    doc.text(`TOTAL GENERAL: $${granTotal.toLocaleString('es-CO')}`, 200, finalY, { align: 'right' });
+
+    // Pie de página
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    doc.text("Generado por: Sistema de Liquidación SNR - Yair B. Leal Guerra", 10, 285);
+
+    // Descargar el archivo
+    doc.save(`liquidacion_${Date.now()}.pdf`);
+}
