@@ -137,3 +137,16 @@ function limpiarCampos() {
     document.getElementById('lblNombreActo').textContent = "Esperando código...";
     document.getElementById('txtCodigoActo').focus();
 }
+
+/**
+ * Limpia toda la liquidación actual (Botón CLS)
+ */
+function borrarLiquidacionTotal() {
+    if (listaActosAsociados.length === 0) return;
+
+    if (confirm("¿Está seguro de que desea borrar toda la liquidación?")) {
+        listaActosAsociados = []; // Vacía el arreglo
+        renderizarTabla();        // Refresca la tabla (quedará vacía)
+        limpiarCampos();          // Coloca los inputs en cero y da foco al código
+    }
+}
