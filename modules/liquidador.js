@@ -1,224 +1,225 @@
-// modules/liquidador.js
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liquidación Múltiple SNR - ORIP Barranquilla 2026</title>
+    <style>
+        :root { --primary: #27ae60; --dark: #2c3e50; --bg: #f4f7f6; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); }
+        
+        /* Sidebar */
+        #sidebar { width: 260px; background: var(--dark); color: white; padding: 25px; flex-shrink: 0; }
+        .user-info { font-size: 0.85rem; opacity: 0.9; line-height: 1.6; }
+        
+        /* Main Content */
+        #main { flex-grow: 1; padding: 30px; overflow-y: auto; }
+        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        
+        /* Formulario Optimizado */
+        .grid-form { display: grid; grid-template-columns: 100px 1fr 1fr 100px 150px; gap: 15px; align-items: flex-end; }
+        .form-group { display: flex; flex-direction: column; }
+        label { font-weight: bold; font-size: 0.75rem; margin-bottom: 5px; color: #7f8c8d; text-transform: uppercase; }
+        input { padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
+        input:focus { border-color: var(--primary); outline: none; }
+        
+        /* Tabla de Actos */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; background: #f8f9fa; padding: 12px; border-bottom: 2px solid #eee; color: var(--dark); }
+        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+        .btn-add { background: var(--primary); color: white; border: none; padding: 11px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-delete { background: #e74c3c; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; }
+        .btn-edit { background: #3498db; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; margin-right: 5px; }
 
-export function init(container) {
-    // 1. CARGAR O INICIALIZAR EL CONTADOR DE TURNOS
-    let ultimoTurno = localStorage.getItem('ultimo_turno_snr') || "00000";
-    let siguienteCorrelativo = (parseInt(ultimoTurno) + 1).toString().padStart(5, '0');
-    let prefijoTurno = `2026-040-6-${siguienteCorrelativo}`;
+        /* Totales */
+        .footer-liq { display: flex; justify-content: flex-end; margin-top: 20px; }
+        .total-banner { background: var(--dark); color: var(--primary); padding: 15px 30px; border-radius: 8px; font-size: 24px; font-weight: bold; text-align: right; }
+        .total-banner small { display: block; color: white; font-size: 12px; font-weight: normal; }
+    </style>
+</head>
+<body>
 
-    container.innerHTML = `
-        <div class="liquidador-container" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; animation: fadeIn 0.4s ease;">
-            <div style="background: #2c3e50; color: white; padding: 15px; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center;">
-                <h2 style="margin:0; font-size: 1.2rem;">🚀 Liquidador Experto SNR - Barranquilla</h2>
-                <span id="reloj" style="font-family: monospace; background: #34495e; padding: 5px 10px; border-radius: 4px;"></span>
+<aside id="sidebar">
+    <h2>SNR SIR</h2>
+    <p>ORIP Barranquilla</p>
+    <hr style="opacity: 0.2; margin: 20px 0;">
+    <div class="user-info">
+        <p>👤 <b>Yair B. Leal Guerra</b><br>Auxiliar Administrativo</p>
+        <p>📅 <b>Res. 1726 / 2026</b><br>UVB: $12.110</p>
+    </div>
+</aside>
+
+<main id="main">
+    <div class="card">
+        <h3 style="margin-top:0">Ingreso de Actos</h3>
+        <div class="grid-form">
+            <div class="form-group">
+                <label>Código</label>
+                <input type="number" id="txtCodigoActo" placeholder="Ej: 1" autofocus>
             </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; background: #fff; border: 1px solid #ddd; border-top: none;">
-                <div style="border-right: 1px solid #eee; padding-right: 20px;">
-                    <label><b>Próximo Turno:</b></label>
-                    <input type="text" id="turnoDisplay" value="${prefijoTurno}" disabled style="width:100%; padding:10px; margin-bottom:15px; background:#f9f9f9; border:1px solid #ccc; font-weight:bold; color:#d35400;">
-
-                    <label><b>Valor del Acto (Contrato):</b></label>
-                    <input type="number" id="valActo" placeholder="$ 0" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid #1abc9c;">
-
-                    <label><b>Avalúo Catastral:</b></label>
-                    <input type="number" id="valAvaluo" placeholder="$ 0" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid #1abc9c;">
-                    
-                    <label><b>Nivel de Cobro (Tarifa):</b></label>
-                    <select id="tarifaTipo" style="width:100%; padding:10px; margin-bottom:15px;">
-                        <option value="NORMAL">Tarifa Plena (Normal)</option>
-                        <option value="VIS">Interés Social (VIS)</option>
-                        <option value="VIP">Interés Prioritario (VIP/Exento)</option>
-                    </select>
-                </div>
-
-                <div id="panelCalculo" style="background: #f4f7f6; padding: 15px; border-radius: 8px; border-left: 5px solid #2ecc71;">
-                    <h3 style="margin-top:0;">Previsualización:</h3>
-                    <p>Base Gravable: <b id="resBase">$ 0</b></p>
-                    <p>Rango Detectado: <span id="resRango">-</span></p>
-                    <hr>
-                    <p>Derechos Base: <b id="resDer">$ 0</b></p>
-                    <p>Conservación (2%): <b id="resCons">$ 0</b></p>
-                    <div style="font-size: 1.5rem; color: #27ae60; margin-top: 10px;">
-                        TOTAL: <b id="resTotal">$ 0</b>
-                    </div>
-                    <button id="btnGrabar" style="width:100%; margin-top:20px; padding:15px; background:#27ae60; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">
-                        💾 GRABAR Y GENERAR TURNO
-                    </button>
-                </div>
+            <div class="form-group">
+                <label>Nombre del Acto</label>
+                <input type="text" id="lblNombreActo" disabled placeholder="---">
             </div>
+            <div class="form-group" id="divCuantia" style="visibility: hidden;">
+                <label>Cuantía (Base)</label>
+                <input type="number" id="txtCuantia" value="0">
+            </div>
+            <div class="form-group" id="divFolios" style="display: none;">
+                <label>Folios</label>
+                <input type="number" id="txtFolios" value="1" min="1">
+            </div>
+            <button class="btn-add" onclick="agregarActoALista()">+ AGREGAR</button>
+        </div>
+    </div>
 
-            <div style="margin-top:20px;">
-                <h3>Historial de Turnos Grabados (2026)</h3>
-                <div id="historialContainer" style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd;">
-                    <table style="width:100%; border-collapse:collapse; background:white;">
-                        <thead style="background:#ecf0f1; position: sticky; top: 0;">
-                            <tr>
-                                <th style="padding:10px; border:1px solid #ddd;">Turno</th>
-                                <th style="padding:10px; border:1px solid #ddd;">Base</th>
-                                <th style="padding:10px; border:1px solid #ddd;">Total</th>
-                                <th style="padding:10px; border:1px solid #ddd;">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tablaCuerpo"></tbody>
-                    </table>
-                </div>
+    <div class="card">
+        <h3>Resumen de Escritura / Trámite</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Acto Registral</th>
+                    <th>Cuantía</th>
+                    <th>Folios</th>
+                    <th>Valor (Inc. 2%)</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="cuerpoTablaActos">
+                </tbody>
+        </table>
+
+        <div class="footer-liq">
+            <div class="total-banner">
+                <small>TOTAL A PAGAR (REDONDEADO)</small>
+                <span id="totalLiquidacion">$ 0</span>
             </div>
         </div>
-    `;
+    </div>
+</main>
 
-    // --- LÓGICA DE CÁLCULO ---
-    const inputs = ['valActo', 'valAvaluo', 'tarifaTipo'];
-    inputs.forEach(id => document.getElementById(id).addEventListener('input', calcular));
+<script>
+    // Diccionario Completo abreviado para el ejemplo (Asegúrate de tener el tuyo completo)
+    const DICCIONARIO_SIR = {
+        "1": { acto: "VENTA", tarifa: "CON CUANTIA", folios: "NO" },
+        "2": { acto: "HIPOTECA", tarifa: "CON CUANTIA", folios: "NO" },
+        "7": { acto: "DIVISION MATERIAL", tarifa: "SIN CUANTIA", folios: "SI" },
+        "8": { acto: "CANCELACION HIPOTECA", tarifa: "SIN CUANTIA", folios: "SI" },
+        "12": { acto: "REPRODUCCION CONSTANCIA", tarifa: "FIJA", folios: "NO" },
+        "18": { acto: "AFECTACION VIVIENDA FAMILIAR", tarifa: "SIN CUANTIA", folios: "SI" },
+        "38": { acto: "VIVIENDA DE INTERES SOCIAL", tarifa: "ESPECIAL", folios: "NO" }
+        // Agrega aquí los demás 1000+ códigos
+    };
 
-    function calcular() {
-        let acto = parseFloat(document.getElementById('valActo').value) || 0;
-        let avaluo = parseFloat(document.getElementById('valAvaluo').value) || 0;
-        let tipo = document.getElementById('tarifaTipo').value;
-        
-        let base = Math.max(acto, avaluo);
-        let derechos = 0;
-        let rangoText = "Rango 1";
+    let listaActosAsociados = [];
 
-        if (tipo === "NORMAL") {
-            if (base <= 12852101) {
-                derechos = 53100;
-                rangoText = "Rango 1 (Fijo)";
-            } else if (base <= 192778606) {
-                derechos = base * 0.00911;
-                rangoText = "Rango 2 (9.11/1000)";
-            } else if (base <= 334149656) {
-                derechos = base * 0.01131;
-                rangoText = "Rango 3 (11.31/1000)";
-            } else if (base <= 494798857) {
-                derechos = base * 0.01260;
-                rangoText = "Rango 4 (12.60/1000)";
-            } else {
-                derechos = base * 0.01333;
-                rangoText = "Rango 5 (13.33/1000)";
-            }
-        } else if (tipo === "VIS") {
-            derechos = base * 0.005;
-            rangoText = "Tarifa Especial VIS";
+    // Listener para buscar el nombre al escribir el código
+    document.getElementById('txtCodigoActo').addEventListener('input', function() {
+        const info = DICCIONARIO_SIR[this.value];
+        const lbl = document.getElementById('lblNombreActo');
+        const dCuantia = document.getElementById('divCuantia');
+        const dFolios = document.getElementById('divFolios');
+
+        if(info) {
+            lbl.value = info.acto;
+            dCuantia.style.visibility = (info.tarifa === "CON CUANTIA" || info.tarifa === "ESPECIAL") ? "visible" : "hidden";
+            dFolios.style.display = (info.folios === "SI") ? "flex" : "none";
         } else {
-            derechos = 0;
-            rangoText = "Exento / VIP";
+            lbl.value = "";
+        }
+    });
+
+    function agregarActoALista() {
+        const codigo = document.getElementById('txtCodigoActo').value;
+        const cuantia = parseFloat(document.getElementById('txtCuantia').value) || 0;
+        const folios = parseInt(document.getElementById('txtFolios').value) || 1;
+        const info = DICCIONARIO_SIR[codigo];
+
+        if (!info) return alert("Código no válido");
+
+        // LÓGICA DE CÁLCULO 2026
+        let derechos = 0;
+        let vlrFolios = 0;
+
+        if (info.tarifa === "CON CUANTIA") {
+            if (cuantia <= 12852101) derechos = 53100;
+            else if (cuantia <= 192778606) derechos = cuantia * 0.00911;
+            else if (cuantia <= 334149656) derechos = cuantia * 0.01131;
+            else derechos = cuantia * 0.01333;
+        } 
+        else if (info.tarifa === "SIN CUANTIA") {
+            derechos = 29500;
+            if (info.folios === "SI" && folios > 1) vlrFolios = (folios - 1) * 15300;
+        }
+        else if (info.tarifa === "ESPECIAL") { // Caso VIS
+            derechos = (cuantia * 0.00911) * 0.5;
+        }
+        else if (info.tarifa === "FIJA") {
+            derechos = (codigo === "12") ? 17500 : 29500;
         }
 
-        let conservacion = derechos * 0.02;
-        let total = derechos + conservacion;
+        let subtotal = derechos + vlrFolios;
+        let conservacion = subtotal * 0.02;
+        let totalActo = Math.ceil((subtotal + conservacion) / 100) * 100;
 
-        document.getElementById('resBase').innerText = `$ ${base.toLocaleString('es-CO')}`;
-        document.getElementById('resRango').innerText = rangoText;
-        document.getElementById('resDer').innerText = `$ ${Math.round(derechos).toLocaleString('es-CO')}`;
-        document.getElementById('resCons').innerText = `$ ${Math.round(conservacion).toLocaleString('es-CO')}`;
-        document.getElementById('resTotal').innerText = `$ ${Math.round(total).toLocaleString('es-CO')}`;
-
-        return { turno: prefijoTurno, base, total, derechos, conservacion };
-    }
-
-    // --- GRABAR EN HISTORIAL ---
-    document.getElementById('btnGrabar').onclick = () => {
-        const datos = calcular();
-        if (datos.base === 0) return alert("Ingrese valores para liquidar.");
-
-        let historial = JSON.parse(localStorage.getItem('historial_liquidaciones') || "[]");
-        historial.unshift({
-            turno: prefijoTurno,
-            fecha: new Date().toLocaleString(),
-            base: datos.base,
-            derechos: datos.derechos,
-            cons: datos.conservacion,
-            total: datos.total
+        listaActosAsociados.push({
+            id: Date.now(),
+            codigo,
+            nombre: info.acto,
+            cuantia,
+            folios: (info.folios === "SI") ? folios : 1,
+            total: totalActo
         });
 
-        localStorage.setItem('historial_liquidaciones', JSON.stringify(historial));
-        localStorage.setItem('ultimo_turno_snr', siguienteCorrelativo);
-        
-        alert(`Turno ${prefijoTurno} grabado con éxito.`);
-        location.reload();
-    };
+        resetCampos();
+        renderizarTabla();
+    }
 
-    // --- FUNCIÓN DE IMPRESIÓN PROFESIONAL ---
-    window.imprimirTurno = (reg) => {
-        const ventana = window.open('', '_blank');
-        ventana.document.write(`
-            <html>
-            <head>
-                <style>
-                    body { font-family: 'Courier New', Courier, monospace; font-size: 13px; padding: 20px; line-height: 1.3; }
-                    .center { text-align: center; font-weight: bold; }
-                    .bold { font-weight: bold; }
-                    hr { border: 0; border-top: 1px dashed #000; }
-                    table { width: 100%; margin: 15px 0; border-collapse: collapse; }
-                    th { border-bottom: 1px solid #000; text-align: left; }
-                </style>
-            </head>
-            <body>
-                <div class="center">
-                    OFICINA DE REGISTRO DE INSTRUMENTOS PÚBLICOS<br>
-                    BARRANQUILLA - NIT: 899999007-0<br>
-                    SOLICITUD REGISTRO DOCUMENTOS
-                </div>
-                <br>
-                Impreso el: ${new Date().toLocaleString()}<br>
-                <span class="bold">No. RADICACIÓN: ${reg.turno}</span><br>
-                NOMBRE DEL SOLICITANTE: ________________________________<br>
-                MATRICULAS: 040-__________
-                <hr>
-                <span class="bold">ACTOS A REGISTRAR:</span>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Tipo</th>
-                            <th>Cuantía</th>
-                            <th>Derecho</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>ACTO CON CUANTÍA</td>
-                            <td>$ ${reg.base.toLocaleString('es-CO')}</td>
-                            <td>$ ${Math.round(reg.derechos).toLocaleString('es-CO')}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <hr>
-                VALOR DERECHOS: $ ${Math.round(reg.derechos).toLocaleString('es-CO')}<br>
-                Conservación documental (2%): $ ${Math.round(reg.cons).toLocaleString('es-CO')}<br>
-                <br>
-                <div class="bold" style="font-size: 15px;">
-                    TOTAL A PAGAR: $ ${Math.round(reg.total).toLocaleString('es-CO')}
-                </div>
-                <br><br>
-                <div class="center">Powered by Liquidador Experto SNR</div>
-                <script>window.onload = function() { window.print(); window.close(); }</script>
-            </body>
-            </html>
-        `);
-        ventana.document.close();
-    };
+    function renderizarTabla() {
+        const cuerpo = document.getElementById('cuerpoTablaActos');
+        const totalLbl = document.getElementById('totalLiquidacion');
+        cuerpo.innerHTML = "";
+        let suma = 0;
 
-    // --- RENDERIZAR TABLA ---
-    const cargarTabla = () => {
-        let historial = JSON.parse(localStorage.getItem('historial_liquidaciones') || "[]");
-        const cuerpo = document.getElementById('tablaCuerpo');
-        cuerpo.innerHTML = historial.map((reg, index) => `
-            <tr>
-                <td style="padding:8px; border:1px solid #ddd; font-family:monospace;">${reg.turno}</td>
-                <td style="padding:8px; border:1px solid #ddd;">$${reg.base.toLocaleString()}</td>
-                <td style="padding:8px; border:1px solid #ddd; font-weight:bold;">$${Math.round(reg.total).toLocaleString()}</td>
-                <td style="padding:8px; border:1px solid #ddd; text-align:center;">
-                    <button onclick='window.imprimirTurno(${JSON.stringify(reg)})' style="cursor:pointer;">🖨️ PDF</button>
-                </td>
-            </tr>
-        `).join('');
-    };
+        listaActosAsociados.forEach((item, index) => {
+            suma += item.total;
+            cuerpo.innerHTML += `
+                <tr>
+                    <td><b>${item.codigo}</b> - ${item.nombre}</td>
+                    <td>${item.cuantia > 0 ? '$' + item.cuantia.toLocaleString() : 'N/A'}</td>
+                    <td>${item.folios}</td>
+                    <td><b>$ ${item.total.toLocaleString()}</b></td>
+                    <td>
+                        <button class="btn-edit" onclick="editarActo(${index})">✏️</button>
+                        <button class="btn-delete" onclick="eliminarActo(${index})">🗑️</button>
+                    </td>
+                </tr>`;
+        });
+        totalLbl.textContent = "$ " + suma.toLocaleString();
+    }
 
-    cargarTabla();
-    
-    setInterval(() => {
-        const reloj = document.getElementById('reloj');
-        if (reloj) reloj.innerText = new Date().toLocaleTimeString();
-    }, 1000);
-}
+    function eliminarActo(index) {
+        listaActosAsociados.splice(index, 1);
+        renderizarTabla();
+    }
+
+    function editarActo(index) {
+        const item = listaActosAsociados[index];
+        document.getElementById('txtCodigoActo').value = item.codigo;
+        document.getElementById('txtCuantia').value = item.cuantia;
+        document.getElementById('txtFolios').value = item.folios;
+        document.getElementById('txtCodigoActo').dispatchEvent(new Event('input'));
+        listaActosAsociados.splice(index, 1);
+        renderizarTabla();
+    }
+
+    function resetCampos() {
+        document.getElementById('txtCodigoActo').value = "";
+        document.getElementById('txtCuantia').value = "0";
+        document.getElementById('txtFolios').value = "1";
+        document.getElementById('lblNombreActo').value = "";
+        document.getElementById('txtCodigoActo').focus();
+    }
+</script>
+</body>
+</html>
