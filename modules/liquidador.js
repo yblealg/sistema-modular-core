@@ -141,12 +141,34 @@ function limpiarCampos() {
 /**
  * Limpia toda la liquidación actual (Botón CLS)
  */
+/**
+ * Borra toda la liquidación y resetea la tabla a cero
+ */
 function borrarLiquidacionTotal() {
-    if (listaActosAsociados.length === 0) return;
-
-    if (confirm("¿Está seguro de que desea borrar toda la liquidación?")) {
-        listaActosAsociados = []; // Vacía el arreglo
-        renderizarTabla();        // Refresca la tabla (quedará vacía)
-        limpiarCampos();          // Coloca los inputs en cero y da foco al código
+    // Si no hay nada en la tabla, solo limpiamos los campos de texto
+    if (listaActosAsociados.length === 0) {
+        limpiarCampos();
+        return;
     }
+
+    // Confirmación para evitar borrados accidentales
+    if (confirm("¿Desea borrar todos los actos cargados?")) {
+        listaActosAsociados = []; // Vaciamos la lista global
+        renderizarTabla();        // Refrescamos la tabla para que se vea vacía
+        limpiarCampos();          // Ponemos los inputs en blanco
+    }
+}
+
+/**
+ * Deja los inputs listos para la siguiente liquidación
+ */
+function limpiarCampos() {
+    document.getElementById('txtCodigoActo').value = "";
+    document.getElementById('txtCuantia').value = "0";
+    // Si el div de folios existe, lo reseteamos a 1
+    if (document.getElementById('txtFolios')) {
+        document.getElementById('txtFolios').value = "1";
+    }
+    document.getElementById('lblNombreActo').textContent = "Esperando código...";
+    document.getElementById('txtCodigoActo').focus();
 }
