@@ -4,73 +4,179 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SNR SIR - Liquidador Oficial 2026</title>
+
     <style>
-        :root { --snr-blue: #2c3e50; --snr-green: #8ada09; --bg: #f4f7f6; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); }
-        #sidebar { width: 280px; background: var(--snr-blue); color: white; padding: 25px; flex-shrink: 0; border-right: 5px solid var(--snr-green); }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        #main { flex-grow: 1; padding: 30px; overflow-y: auto; }
-        .grid-input { display: grid; grid-template-columns: 100px 1fr 180px 100px 150px; gap: 15px; align-items: flex-end; }
-        label { font-size: 0.7rem; font-weight: bold; color: #7f8c8d; text-transform: uppercase; }
-        input { padding: 12px; border: 2px solid #dfe6e9; border-radius: 8px; width: 100%; box-sizing: border-box; }
-        .btn { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
-        .btn-add { background: var(--snr-green); color: white; }
-        .btn-cert { background: #2980b9; color: white; margin-top: 15px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th { text-align: left; background: #f8f9fa; padding: 12px; font-size: 0.75rem; }
-        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
-        .total-box { background: var(--snr-blue); color: var(--snr-green); padding: 20px; border-radius: 10px; text-align: right; margin-top: 20px; }
+        :root {
+            --snr-blue: #2c3e50;
+            --snr-green: #8ada09;
+            --bg: #f4f7f6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            background: var(--bg);
+        }
+
+        #sidebar {
+            width: 280px;
+            background: var(--snr-blue);
+            color: white;
+            padding: 25px;
+            flex-shrink: 0;
+            border-right: 5px solid var(--snr-green);
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        #main {
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .grid-input {
+            display: grid;
+            grid-template-columns: 100px 1fr 180px 100px 150px;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        label {
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #7f8c8d;
+            text-transform: uppercase;
+        }
+
+        input {
+            padding: 12px;
+            border: 2px solid #dfe6e9;
+            border-radius: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .btn-add {
+            background: var(--snr-green);
+            color: white;
+        }
+
+        .btn-cert {
+            background: #2980b9;
+            color: white;
+            margin-top: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            text-align: left;
+            background: #f8f9fa;
+            padding: 12px;
+            font-size: 0.75rem;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .total-box {
+            background: var(--snr-blue);
+            color: var(--snr-green);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: right;
+            margin-top: 20px;
+        }
     </style>
 </head>
+
 <body>
 
+<!-- ================= SIDEBAR ================= -->
 <aside id="sidebar">
     <h2>SNR SIR</h2>
     <p>ORIP Barranquilla</p>
     <hr>
+
     <p><small><b>Funcionario:</b><br>Yair B. Leal Guerra</small></p>
     <p><small><b>Auxiliar:</b><br>Administrativo 4044_13</small></p>
     <p><small><b>Norma:</b> Tarifa 2026<br>Res. 1726 del 29 de Enero de 2026</small></p>
-    <div style="margin-top: 15px; width: 100%; text-align: center; overflow: hidden;">
-    <img src="OTI.jpg" alt="Oficina de Tecnologías de la Información" 
-         style="max-width: 100%; height: auto; border-radius: 4px; display: block; margin: 0 auto;">
-</div>
-</div>
+
+    <div style="margin-top: 15px; text-align: center;">
+        <img src="OTI.jpg" style="max-width:100%; border-radius:4px;">
+    </div>
 </aside>
 
+<!-- ================= MAIN ================= -->
 <main id="main">
+
+    <!-- FORMULARIO -->
     <div class="card">
         <h3>Liquidador de Actos</h3>
+
         <div class="grid-input">
+
             <div>
                 <label>Código SIR</label>
                 <input type="number" id="cod" autofocus>
             </div>
+
             <div>
                 <label>Nombre del Acto</label>
                 <input type="text" id="nombreActo" disabled>
             </div>
-            <div id="boxCuantia" style="visibility: hidden;">
+
+            <div id="boxCuantia" style="visibility:hidden;">
                 <label>Base Gravable</label>
                 <input type="number" id="base" value="0">
             </div>
-            <div id="boxFolios" style="display: none;">
+
+            <div id="boxFolios" style="display:none;">
                 <label>Folios</label>
                 <input type="number" id="folios" value="1">
             </div>
+
             <button class="btn btn-add" onclick="agregarActo()">Liquidar</button>
-            <button onclick="exportarPDF()" style="background-color: #2c3e50; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer;">
-    EXPORTAR PDF
-</button>
+
+            <button onclick="exportarPDF()" style="background:#2c3e50;color:white;padding:10px;border-radius:4px;">
+                EXPORTAR PDF
+            </button>
         </div>
-        
-        <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+
+        <!-- CERTIFICADOS -->
+        <div style="margin-top:20px;border-top:1px solid #eee;padding-top:15px;">
             <label>Certificados de Tradición</label><br>
-            <input type="number" id="cantCert" value="0" style="width: 80px; display: inline-block;">
-            <button class="btn btn-cert" onclick="agregarCert()">+ Añadir Certificados</button>
+            <input type="number" id="cantCert" value="0" style="width:80px;">
+            <button class="btn btn-cert" onclick="agregarCert()">+ Añadir</button>
         </div>
     </div>
 
+    <!-- TABLA -->
     <div class="card">
         <table>
             <thead>
@@ -78,125 +184,218 @@
                     <th>Código</th>
                     <th>Acto</th>
                     <th>Base / Cant</th>
-                    <th>Total Item</th>
-                    <th>Acción</th>
+                    <th>Total</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody id="tabla"></tbody>
         </table>
+
         <div class="total-box">
             <small style="color:white">TOTAL GENERAL</small><br>
-            <b style="font-size: 2rem;" id="vTotal">$ 0</b>
+            <b id="vTotal">$ 0</b>
         </div>
     </div>
+
 </main>
 
+<!-- LIBRERÍAS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
 <script>
-    const DICCIONARIO_SIR = {
-        "1": { acto: "VENTA", tarifa: "CON CUANTIA", folios: "NO" },
-        "2": { acto: "HIPOTECA", tarifa: "CON CUANTIA", folios: "NO" },
-        "3": { acto: "REMATE", tarifa: "CON CUANTIA", folios: "NO" },
-        "4": { acto: "SUCESION", tarifa: "CON CUANTIA", folios: "NO" },
-        "6": { acto: "PERMUTA", tarifa: "CON CUANTIA", folios: "NO" },
-        "7": { acto: "DIVISION MATERIAL", tarifa: "SIN CUANTIA", folios: "SI" },
-        "8": { acto: "CANCELACION HIPOTECA", tarifa: "SIN CUANTIA", folios: "SI" },
-        "9": { acto: "PATRIMONIO DE FAMILIA", tarifa: "SIN CUANTIA", folios: "SI" },
-        "10": { acto: "EMBARGO", tarifa: "SIN CUANTIA", folios: "SI" },
-        "11": { acto: "DEMANDA", tarifa: "SIN CUANTIA", folios: "SI" },
-        "12": { acto: "REPRODUCCION CONSTANCIA", tarifa: "FIJA", folios: "NO", valor: 17500 },
-        "13": { acto: "CANCELACION PATRIMONIO DE FAMILIA", tarifa: "SIN CUANTIA", folios: "SI" },
-        "14": { acto: "PROPIEDAD HORIZONTAL", tarifa: "SIN CUANTIA", folios: "SI" },
-        "15": { acto: "HIPOTECA SIN LIMITE", tarifa: "CON CUANTIA", folios: "NO" },
-        "16": { acto: "ACLARACION", tarifa: "SIN CUANTIA", folios: "SI" },
-        "17": { acto: "CANCELACION EMBARGO", tarifa: "SIN CUANTIA", folios: "NO" },
-        "18": { acto: "AFECTACION A VIVIENDA FAMILIAR", tarifa: "SIN CUANTIA", folios: "SI" },
-        "19": { acto: "MATRICULAS", tarifa: "FIJA", folios: "NO", valor: 29500 },
-        "21": { acto: "ENGLOBE", tarifa: "SIN CUANTIA", folios: "SI" },
-        "27": { acto: "DESENGLOBE", tarifa: "SIN CUANTIA", folios: "SI" },
-        "28": { acto: "FIDUCIA", tarifa: "CON CUANTIA", folios: "NO" },
-        "31": { acto: "SERVIDUMBRE (CON CUANTIA)", tarifa: "CON CUANTIA", folios: "NO" },
-        "35": { acto: "DECLARACION CONSTRUCCION (CON)", tarifa: "CON CUANTIA", folios: "NO" },
-        "36": { acto: "DACION EN PAGO", tarifa: "CON CUANTIA", folios: "NO" },
-        "38": { acto: "VIVIENDA DE INTERES SOCIAL (VIS)", tarifa: "ESPECIAL", folios: "NO" },
-        "40": { acto: "USUFRUCTO (CON CUANTIA)", tarifa: "CON CUANTIA", folios: "NO" },
-        "43": { acto: "DECLARACION CONSTRUCCION (SIN)", tarifa: "SIN CUANTIA", folios: "SI" },
-        "48": { acto: "ESCISION (CON CUANTIA)", tarifa: "CON CUANTIA", folios: "NO" },
-        "50": { acto: "FUSION (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
-        "110": { acto: "CONSTITUCION RESGUARDO INDIGENA", tarifa: "EXENTO", folios: "NO" },
-        "120": { acto: "LIQUIDACION SOCIEDAD CONYUGAL (CON)", tarifa: "CON CUANTIA", folios: "NO" },
-        "128": { acto: "CESION TITULO GRATUITO BIENES FISCALES", tarifa: "EXENTO", folios: "NO" },
-        "156": { acto: "EXPROPIACION", tarifa: "CON CUANTIA", folios: "NO" },
-        "200": { acto: "ACTUALIZACION DE NOMENCLATURA", tarifa: "SIN CUANTIA", folios: "SI" },
-        "903": { acto: "ACTUALIZACION DE AREA Y/O LINDEROS", tarifa: "SIN CUANTIA", folios: "SI" },
-        "1013": { acto: "TRANSFERENCIA DE DOMINIO TITULO CESION", tarifa: "CON CUANTIA", folios: "NO" }
-    };
 
-    let liquidacion = [];
-    const VALOR_CERT = 24300;
+/* ================= CONFIGURACIÓN ================= */
 
-    document.getElementById('cod').addEventListener('input', function() {
-        const info = DICCIONARIO_SIR[this.value];
-        const bc = document.getElementById('boxCuantia'), bf = document.getElementById('boxFolios');
-        if(info) {
-            document.getElementById('nombreActo').value = info.acto;
-            bc.style.visibility = (info.tarifa === "CON CUANTIA" || info.tarifa === "ESPECIAL") ? "visible" : "hidden";
-            bf.style.display = (info.folios === "SI") ? "block" : "none";
-        }
+const DICCIONARIO_SIR = {
+    "1": { acto: "VENTA", tarifa: "CON CUANTIA", folios: "NO" },
+    "2": { acto: "HIPOTECA", tarifa: "CON CUANTIA", folios: "NO" },
+    "3": { acto: "REMATE", tarifa: "CON CUANTIA", folios: "NO" },
+    "4": { acto: "SUCESION", tarifa: "CON CUANTIA", folios: "NO" },
+    "6": { acto: "PERMUTA", tarifa: "CON CUANTIA", folios: "NO" },
+    "7": { acto: "DIVISION MATERIAL", tarifa: "SIN CUANTIA", folios: "SI" },
+    "8": { acto: "CANCELACION HIPOTECA", tarifa: "SIN CUANTIA", folios: "SI" },
+    "9": { acto: "PATRIMONIO DE FAMILIA", tarifa: "SIN CUANTIA", folios: "SI" },
+    "10": { acto: "EMBARGO", tarifa: "SIN CUANTIA", folios: "SI" },
+    "11": { acto: "DEMANDA", tarifa: "SIN CUANTIA", folios: "SI" },
+    "12": { acto: "REPRODUCCION CONSTANCIA", tarifa: "FIJA", folios: "NO", valor: 17500 },
+    "13": { acto: "CANCELACION PATRIMONIO DE FAMILIA", tarifa: "SIN CUANTIA", folios: "SI" },
+    "14": { acto: "PROPIEDAD HORIZONTAL", tarifa: "SIN CUANTIA", folios: "SI" },
+    "15": { acto: "HIPOTECA SIN LIMITE", tarifa: "CON CUANTIA", folios: "NO" },
+    "16": { acto: "ACLARACION", tarifa: "SIN CUANTIA", folios: "SI" },
+    "17": { acto: "CANCELACION EMBARGO", tarifa: "SIN CUANTIA", folios: "NO" },
+    "18": { acto: "AFECTACION A VIVIENDA FAMILIAR", tarifa: "SIN CUANTIA", folios: "SI" },
+    "19": { acto: "MATRICULAS", tarifa: "FIJA", folios: "NO", valor: 29500 },
+    "21": { acto: "ENGLOBE", tarifa: "SIN CUANTIA", folios: "SI" },
+    "27": { acto: "DESENGLOBE", tarifa: "SIN CUANTIA", folios: "SI" },
+    "28": { acto: "FIDUCIA", tarifa: "CON CUANTIA", folios: "NO" },
+    "31": { acto: "SERVIDUMBRE (CON CUANTIA)", tarifa: "CON CUANTIA", folios: "NO" },
+    "35": { acto: "DECLARACION CONSTRUCCION (CON)", tarifa: "CON CUANTIA", folios: "NO" },
+    "36": { acto: "DACION EN PAGO", tarifa: "CON CUANTIA", folios: "NO" },
+    "38": { acto: "VIVIENDA DE INTERES SOCIAL (VIS)", tarifa: "ESPECIAL", folios: "NO" },
+    "40": { acto: "USUFRUCTO (CON CUANTIA)", tarifa: "CON CUANTIA", folios: "NO" },
+    "43": { acto: "DECLARACION CONSTRUCCION (SIN)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "48": { acto: "ESCISION (CON CUANTIA)", tarifa: "CON CUANTIA", folios: "NO" },
+    "50": { acto: "FUSION (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "110": { acto: "CONSTITUCION RESGUARDO INDIGENA", tarifa: "EXENTO", folios: "NO" },
+    "120": { acto: "LIQUIDACION SOCIEDAD CONYUGAL (CON)", tarifa: "CON CUANTIA", folios: "NO" },
+    "128": { acto: "CESION TITULO GRATUITO BIENES FISCALES", tarifa: "EXENTO", folios: "NO" },
+    "156": { acto: "EXPROPIACION", tarifa: "CON CUANTIA", folios: "NO" },
+    "200": { acto: "ACTUALIZACION DE NOMENCLATURA", tarifa: "SIN CUANTIA", folios: "SI" },
+    "903": { acto: "ACTUALIZACION DE AREA Y/O LINDEROS", tarifa: "SIN CUANTIA", folios: "SI" },
+    "1013": { acto: "TRANSFERENCIA DE DOMINIO TITULO CESION", tarifa: "CON CUANTIA", folios: "NO" }
+};
+
+let liquidacion = [];
+const VALOR_CERT = 24300;
+
+/* ================= EVENTOS ================= */
+
+document.getElementById('cod').addEventListener('input', function () {
+
+    const info = DICCIONARIO_SIR[this.value];
+    const boxC = document.getElementById('boxCuantia');
+    const boxF = document.getElementById('boxFolios');
+
+    if (info) {
+        document.getElementById('nombreActo').value = info.acto;
+
+        boxC.style.visibility = (info.tarifa === "CON CUANTIA" || info.tarifa === "ESPECIAL") ? "visible" : "hidden";
+        boxF.style.display = (info.folios === "SI") ? "block" : "none";
+    }
+});
+
+/* ================= FUNCIONES ================= */
+
+function agregarActo() {
+
+    const cod = document.getElementById('cod').value;
+    const info = DICCIONARIO_SIR[cod];
+
+    if (!info) return;
+
+    const cuantia = parseFloat(document.getElementById('base').value) || 0;
+    const folios = parseInt(document.getElementById('folios').value) || 1;
+
+    let derechos = 0;
+
+    // Cálculo según tipo de tarifa
+    if (info.tarifa === "CON CUANTIA") {
+
+        if (cuantia <= 12852101) derechos = 53100;
+        else if (cuantia <= 192778606) derechos = cuantia * 0.00911;
+        else if (cuantia <= 334149656) derechos = cuantia * 0.01131;
+        else if (cuantia <= 494798857) derechos = cuantia * 0.01260;
+        else derechos = cuantia * 0.01333;
+
+    } else if (info.tarifa === "SIN CUANTIA") {
+
+        derechos = 29500 + (folios > 1 ? (folios - 1) * 15300 : 0);
+
+    } else if (info.tarifa === "FIJA") {
+
+        derechos = info.valor;
+
+    } else if (info.tarifa === "ESPECIAL") {
+
+        derechos = Math.max(26550, (cuantia * 0.00911) * 0.5);
+
+    } else if (info.tarifa === "EXENTO") {
+
+        derechos = 0;
+    }
+
+    // 2% + redondeo
+    const total = (info.tarifa === "EXENTO") ? 0 : Math.ceil((derechos * 1.02) / 100) * 100;
+
+    liquidacion.push({
+        cod,
+        acto: info.acto,
+        base: (info.tarifa === "CON CUANTIA") ? cuantia : folios,
+        total
     });
 
-    function agregarActo() {
-        const cod = document.getElementById('cod').value;
-        const info = DICCIONARIO_SIR[cod];
-        if(!info) return;
+    render();
+}
 
-        const cuantia = parseFloat(document.getElementById('base').value) || 0;
-        const folios = parseInt(document.getElementById('folios').value) || 1;
-        
-        let derechos = 0;
-        if (info.tarifa === "CON CUANTIA") {
-            // LÓGICA DE TU TABLA CORREGIDA
-            if (cuantia <= 12852101) derechos = 53100;
-            else if (cuantia <= 192778606) derechos = cuantia * 0.00911;
-            else if (cuantia <= 334149656) derechos = cuantia * 0.01131;
-            else if (cuantia <= 494798857) derechos = cuantia * 0.01260;
-            else derechos = cuantia * 0.01333;
-        } else if (info.tarifa === "SIN CUANTIA") {
-            derechos = 29500 + (folios > 1 ? (folios - 1) * 15300 : 0);
-        } else if (info.tarifa === "FIJA") {
-            derechos = info.valor;
-        } else if (info.tarifa === "ESPECIAL") {
-            derechos = Math.max(26550, (cuantia * 0.00911) * 0.5);
-        } else if (info.tarifa === "EXENTO") {
-            derechos = 0;
-        }
+/* ================= CERTIFICADOS ================= */
 
-        // Aplicar 2% y redondeo
-        let total = (info.tarifa === "EXENTO") ? 0 : Math.ceil((derechos * 1.02) / 100) * 100;
-        
-        liquidacion.push({ cod, acto: info.acto, base: (info.tarifa === "CON CUANTIA" ? cuantia : folios), total });
-        render();
-        document.getElementById('cod').value = ""; document.getElementById('cod').focus();
-    }
+function agregarCert() {
 
-    function agregarCert() {
-        const c = parseInt(document.getElementById('cantCert').value);
-        if(c > 0) liquidacion.push({ cod: "CERT", acto: "CERTIFICADO", base: c, total: c * VALOR_CERT });
-        document.getElementById('cantCert').value = "0";
-        render();
-    }
+    const c = parseInt(document.getElementById('cantCert').value);
 
-    function render() {
-        const t = document.getElementById('tabla');
-        let suma = 0; t.innerHTML = "";
-        liquidacion.forEach((item, i) => {
-            suma += item.total;
-            t.innerHTML += `<tr><td>${item.cod}</td><td>${item.acto}</td><td>${item.base.toLocaleString()}</td><td>$${item.total.toLocaleString()}</td><td><button onclick="liquidacion.splice(${i},1);render()">✕</button></td></tr>`;
+    if (c > 0) {
+        liquidacion.push({
+            cod: "CERT",
+            acto: "CERTIFICADO",
+            base: c,
+            total: c * VALOR_CERT
         });
-        document.getElementById('vTotal').innerText = "$ " + suma.toLocaleString();
     }
+
+    render();
+}
+
+/* ================= RENDER ================= */
+
+function render() {
+
+    const tabla = document.getElementById('tabla');
+    let suma = 0;
+
+    tabla.innerHTML = "";
+
+    liquidacion.forEach((item, i) => {
+
+        suma += item.total;
+
+        tabla.innerHTML += `
+            <tr>
+                <td>${item.cod}</td>
+                <td>${item.acto}</td>
+                <td>${item.base.toLocaleString()}</td>
+                <td>$${item.total.toLocaleString()}</td>
+                <td>
+                    <button onclick="liquidacion.splice(${i},1);render()">✕</button>
+                </td>
+            </tr>
+        `;
+    });
+
+    document.getElementById('vTotal').innerText = "$ " + suma.toLocaleString();
+}
+
+/* ================= PDF ================= */
+
+function exportarPDF() {
+
+    if (liquidacion.length === 0) {
+        alert("No hay datos");
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.text("SUPERINTENDENCIA DE NOTARIADO Y REGISTRO", 105, 15, { align: 'center' });
+
+    const body = liquidacion.map(i => [
+        i.cod,
+        i.acto,
+        i.base,
+        "$ " + i.total
+    ]);
+
+    doc.autoTable({
+        startY: 30,
+        head: [['Código', 'Acto', 'Base', 'Total']],
+        body
+    });
+
+    doc.save("Liquidacion.pdf");
+}
+
 </script>
+
 </body>
 </html>
