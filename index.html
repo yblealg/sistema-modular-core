@@ -365,9 +365,34 @@ function render() {
     document.getElementById('vTotal').innerText = "$ " + suma.toLocaleString();
 }
 
+
+
+// 🔽 funcion para llamar el logo SNR
+
+function getBase64ImageFromURL(url) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        img.src = url;
+
+        img.onload = () => {
+            const canvas = document.createElement("canvas");
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+
+            resolve(canvas.toDataURL("image/jpeg"));
+        };
+
+        img.onerror = error => reject(error);
+    });
+}
 /* ================= PDF ================= */
 
-function exportarPDF() {
+// 🔽 REEMPLAZA TODA TU FUNCIÓN exportarPDF POR ESTA
+async function exportarPDF() {
 
     if (liquidacion.length === 0) {
         alert("No hay datos");
@@ -377,22 +402,38 @@ function exportarPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    doc.text("SUPERINTENDENCIA DE NOTARIADO Y REGISTRO", 105, 15, { align: 'center' });
+    // 🔹 CARGAR LOGO
+    const logo = await getBase64ImageFromURL("logoSNR.jpg");
 
-    const body = liquidacion.map(i => [
-        i.cod,
-        i.acto,
-        i.base,
-        "$ " + i.total
+    // 🔹 INSERTAR LOGO (posición X, Y, ancho, alto)
+    doc.addImage(logo, 'JPEG', 15, 10, 40, 15);
+
+    // 🔹 TÍTULO
+    doc.setFontSize(14);
+    doc.text("SUPERINTENDENCIA DE NOTARIADO Y REGISTRO", 105, 18, { align: 'center' });
+
+    doc.setFontSize(10);
+    doc.text("ORIP Barranquilla - Liquidación 2026", 105, 24, { align: 'center' });
+
+    // 🔹 TABLA
+    const body = liquidacion.map(item => [
+        item.cod,
+        item.acto,
+        item.base.toLocaleString(),
+        `$ ${item.total.toLocaleString()}`
     ]);
 
     doc.autoTable({
-        startY: 30,
+        startY: 35,
         head: [['Código', 'Acto', 'Base', 'Total']],
-        body
+        body: body
     });
 
-    doc.save("Liquidacion.pdf");
+    // 🔹 TOTAL
+    const total = liquidacion.reduce((acc, item) => acc + item.total, 0);
+    doc.text(`TOTAL: $ ${total.toLocaleString()}`, 190, doc.lastAutoTable.finalY + 10, { align: 'right' });
+
+    doc.save(`SNR_${Date.now()}.pdf`);
 }
 
 </script>
