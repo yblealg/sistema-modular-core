@@ -140,9 +140,66 @@
 </aside>
 
 <!-- ================= MAIN ================= -->
-<main id="main">
 
-    <!-- FORMULARIO -->
+<!-- ================= Formulario Datos Inmueble y usuario ================= -->
+<main id="main">
+    <div class="card">
+    <h3>Información del Trámite</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        
+        <div>
+            <div style="margin-bottom: 10px;">
+                <label>Nombre del Solicitante</label>
+                <input type="text" id="txtSolicitante" placeholder="Nombre completo o Razón Social">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div>
+                    <label>Identificación (CC/NIT)</label>
+                    <input type="text" id="txtIdSolicitante">
+                </div>
+                <div>
+                    <label>Matrícula Inmobiliaria</label>
+                    <div style="display: flex; align-items: center;">
+                        <span style="background: #eee; padding: 10px; border: 2px solid #dfe6e9; border-right: none; border-radius: 8px 0 0 8px; font-weight: bold; color: #555;">040-</span>
+                        <input type="number" id="txtMatriculaNum" style="border-radius: 0 8px 8px 0;" placeholder="Número">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                <div>
+                    <label>Fecha Liquidación (Hoy)</label>
+                    <input type="date" id="fechaLiq" disabled>
+                </div>
+                <div>
+                    <label>Fecha del Documento</label>
+                    <input type="date" id="fechaDoc">
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 10px;">
+                <div>
+                    <label>No. Escritura</label>
+                    <input type="number" id="txtEscritura">
+                </div>
+                <div>
+                    <label>Notaría / Oficina Origen</label>
+                    <input type="text" id="txtNotaria" placeholder="Ej: Notaría 1 de Bquilla">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="resumenTramite" class="card" style="display: none; background: #f8f9fa; border-left: 5px solid var(--snr-blue); padding: 15px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; font-size: 0.9rem; color: var(--snr-blue);">
+        <div><b>Solicitante:</b> <span id="viewSolicitante"></span></div>
+        <div><b>Matrícula:</b> <span id="viewMatricula" style="font-weight: bold; color: #d35400;"></span></div>
+        <div><b>Documento:</b> <span id="viewDoc"></span></div>
+    </div>
+</div>
+    <!------------------- TABLA LIQUIDACION--------------------------------------->
     <div class="card">
         <h3>Liquidador de Actos</h3>
 
@@ -175,7 +232,8 @@
             </button>
         </div>
 
-        <!-- CERTIFICADOS -->
+        <!---------------- PANEL CERTIFICADOS ---------------------------->
+
         <div style="margin-top:20px;border-top:1px solid #eee;padding-top:15px;">
             <label>Certificados de Tradición</label><br>
             <input type="number" id="cantCert" value="0" style="width:80px;">
@@ -183,7 +241,7 @@
         </div>
     </div>
 
-    <!-- TABLA -->
+    <!---------------------- TABLA -------------------------------------------------->
     <div class="card">
         <table>
             <thead>
@@ -206,7 +264,8 @@
 
 </main>
 
-<!-- LIBRERÍAS -->
+<!----------------------------- LIBRERÍAS ------------------------------------------------>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
@@ -397,32 +456,55 @@ function getBase64ImageFromURL(url) {
     });
 }
 /* ================= PDF ================= */
+//*==============REEMPLAZO====================
 
-// 🔽 REEMPLAZA TODA TU FUNCIÓN exportarPDF POR ESTA
-async function exportarPDF() {
-
+function exportarPDF() {
     if (liquidacion.length === 0) {
-        alert("No hay datos");
+        alert("Primero realiza una liquidación.");
         return;
     }
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    // 🔹 CARGAR LOGO
-    const logo = await getBase64ImageFromURL("logoSNR.jpg");
+    // --- CAPTURA DE DATOS DEL FORMULARIO NUEVO ---
+    const solicitante = document.getElementById('txtSolicitante').value || "NO REPORTADO";
+    const identificacion = document.getElementById('txtIdSolicitante').value || "N/A";
+    const matriculaNum = document.getElementById('txtMatriculaNum').value;
+    const matriculaCompleta = matriculaNum ? `040-${matriculaNum}` : "N/A";
+    const fechaDocumento = document.getElementById('fechaDoc').value || "N/A";
+    const escritura = document.getElementById('txtEscritura').value || "N/A";
+    const notaria = document.getElementById('txtNotaria').value || "N/A";
+    const fechaHoy = document.getElementById('fechaLiq').value;
 
-    // 🔹 INSERTAR LOGO (posición X, Y, ancho, alto)
-    doc.addImage(logo, 'JPEG', 15, 10, 40, 15);
-
-    // 🔹 TÍTULO
+    // --- ENCABEZADO INSTITUCIONAL ---
     doc.setFontSize(14);
-    doc.text("", 105, 18, { align: 'center' });
-
+    doc.text("SUPERINTENDENCIA DE NOTARIADO Y REGISTRO", 105, 15, { align: 'center' });
     doc.setFontSize(10);
-    doc.text("ORIP Barranquilla - Liquidación 2026", 105, 24, { align: 'center' });
+    doc.text("Oficina de Registro de Instrumentos Públicos de Barranquilla", 105, 21, { align: 'center' });
+    doc.text(`Fecha de Liquidación: ${fechaHoy}`, 200, 21, { align: 'right' });
+    
+    doc.setLineWidth(0.5);
+    doc.line(10, 25, 200, 25); // Línea divisoria
 
-    // 🔹 TABLA
+    // --- BLOQUE DE DATOS DEL TRÁMITE (El nuevo encabezado en el PDF) ---
+    doc.setFont(undefined, 'bold');
+    doc.text("DATOS DEL INTERESADO Y DEL INMUEBLE", 10, 32);
+    doc.setFont(undefined, 'normal');
+    doc.setFontSize(9);
+    doc.text(`Solicitante: ${solicitante}`, 10, 38);
+    doc.text(`Identificación: ${identificacion}`, 10, 43);
+    doc.setFont(undefined, 'bold');
+    doc.text(`MATRÍCULA INMOBILIARIA: ${matriculaCompleta}`, 10, 48);
+    
+    doc.setFont(undefined, 'bold');
+    doc.text("REFERENCIA DEL DOCUMENTO", 120, 32);
+    doc.setFont(undefined, 'normal');
+    doc.text(`Escritura No: ${escritura}`, 120, 38);
+    doc.text(`Notaría/Origen: ${notaria}`, 120, 43);
+    doc.text(`Fecha Documento: ${fechaDocumento}`, 120, 48);
+
+    // --- TABLA DE ACTOS (La que ya tenías) ---
     const body = liquidacion.map(item => [
         item.cod,
         item.acto,
@@ -431,18 +513,62 @@ async function exportarPDF() {
     ]);
 
     doc.autoTable({
-        startY: 35,
-        head: [['Código', 'Acto', 'Base', 'Total']],
-        body: body
+        startY: 55,
+        head: [['Código', 'Acto / Concepto', 'Base / Cant', 'Total Item']],
+        body: body,
+        theme: 'striped',
+        headStyles: { fillColor: [44, 62, 80] },
+        styles: { fontSize: 8 }
     });
 
-    // 🔹 TOTAL
-    const total = liquidacion.reduce((acc, item) => acc + item.total, 0);
-    doc.text(`TOTAL: $ ${total.toLocaleString()}`, 190, doc.lastAutoTable.finalY + 10, { align: 'right' });
+    // --- TOTALES ---
+    const totalFinal = liquidacion.reduce((acc, item) => acc + item.total, 0);
+    const finalY = doc.lastAutoTable.finalY + 10;
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'bold');
+    doc.text(`TOTAL GENERAL A RECAUDAR: $ ${totalFinal.toLocaleString()}`, 200, finalY, { align: 'right' });
 
-    doc.save(`SNR_${Date.now()}.pdf`);
+    // --- PIE DE PÁGINA ---
+    doc.setFontSize(8);
+    doc.setFont(undefined, 'normal');
+    doc.text("Este documento es una liquidación informativa y no constituye un recibo de pago oficial.", 10, 280);
+    doc.text(`Generado por: Yair B. Leal Guerra - Administrativo SNR`, 10, 285);
+
+    doc.save(`Liquidacion_040_${matriculaNum || 'sin_matricula'}.pdf`);
 }
 
+//----DESDE ACA---
+// 1. Cargar fecha de hoy al abrir el sistema
+document.addEventListener('DOMContentLoaded', () => {
+    const hoy = new Date().toISOString().split('T')[0];
+    document.getElementById('fechaLiq').value = hoy;
+});
+
+// 2. Función para actualizar el resumen en tiempo real
+function actualizarResumen() {
+    const resumen = document.getElementById('resumenTramite');
+    const solicitante = document.getElementById('txtSolicitante').value;
+    const matricula = document.getElementById('txtMatriculaNum').value;
+    const escritura = document.getElementById('txtEscritura').value;
+    const notaria = document.getElementById('txtNotaria').value;
+
+    // Si hay algún dato escrito, mostramos el recuadro de resumen
+    if (solicitante || matricula || escritura) {
+        resumen.style.display = 'block';
+        
+        document.getElementById('viewSolicitante').innerText = solicitante || "---";
+        // Aquí ocurre la unión del prefijo 040-
+        document.getElementById('viewMatricula').innerText = matricula ? `040-${matricula}` : "---";
+        document.getElementById('viewDoc').innerText = escritura ? `Esc. ${escritura} - ${notaria}` : "---";
+    } else {
+        resumen.style.display = 'none';
+    }
+}
+
+// 3. Escuchar cada vez que escribes en los campos nuevos
+['txtSolicitante', 'txtMatriculaNum', 'txtEscritura', 'txtNotaria'].forEach(id => {
+    document.getElementById(id).addEventListener('input', actualizarResumen);
+});
 </script>
 
 </body>
