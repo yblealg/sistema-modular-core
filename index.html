@@ -478,16 +478,21 @@ function exportarPDF() {
     const fechaHoy = document.getElementById('fechaLiq').value;
 
     // --- LOGO Y ENCABEZADO ---
-    // Intentamos capturar la imagen OTI del sidebar
-    const imgLogo = document.querySelector('#sidebar img');
+    
+ 
+ 
+    // --- CAPTURA DEL LOGO INSTITUCIONAL ---
+    const imgLogo = document.querySelector('img[src*="logoSNR"]');
     if (imgLogo) {
         try {
             // Ubicación: x=10, y=8 | Tamaño: 30x25 (proporcional)
             doc.addImage(imgLogo, 'JPEG', 10, 8, 30, 25);
         } catch (e) {
-            console.warn("No se pudo cargar el logo en el PDF");
+            console.warn("No se pudo cargar el logoSNR en el PDF");
         }
     }
+    // Intentamos capturar la imagen OTI del sidebar
+
 
     // Título Principal (Desplazado a la derecha del logo)
     doc.setFontSize(14);
