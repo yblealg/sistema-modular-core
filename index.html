@@ -469,75 +469,65 @@ function exportarPDF() {
     }
 
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+    // Configurado específicamente para papel Carta (letter)
+    const doc = new jsPDF('p', 'mm', 'letter'); 
 
-    // --- CAPTURA DE DATOS ---
-    const solicitante = document.getElementById('txtSolicitante').value || "NO REPORTADO";
+    // --- VARIABLES DE POSICIÓN ---
+    const marginTop = 30; // Espacio y medio desde el borde superior
+    const solicitante = document.getElementById('txtSolicitante').value.toUpperCase() || "NO REPORTADO";
     const identificacion = document.getElementById('txtIdSolicitante').value || "N/A";
-    const matriculaNum = document.getElementById('txtMatriculaNum').value;
-    const matriculaCompleta = matriculaNum ? `040-${matriculaNum}` : "N/A";
-    const fechaDocumento = document.getElementById('fechaDoc').value || "N/A";
+    const matriculaNum = document.getElementById('txtMatriculaNum').value || "SIN NÚMERO";
     const escritura = document.getElementById('txtEscritura').value || "N/A";
-    const notaria = document.getElementById('txtNotaria').value || "N/A";
+    const notaria = document.getElementById('txtNotaria').value.toUpperCase() || "N/A";
+    const fechaDocumento = document.getElementById('fechaDoc').value || "N/A";
     const fechaHoy = document.getElementById('fechaLiq').value;
 
-    // --- LOGO Y ENCABEZADO ---
-    
- 
- 
-    // --- CAPTURA DEL LOGO INSTITUCIONAL ---
-    const imgLogo = document.querySelector('img[src*="logoSNR"]');
+    // --- 1. ENCABEZADO E IMAGEN ---
+    const imgLogo = document.getElementById('logoInst'); // El ID que pusimos al PNG transparente
     if (imgLogo) {
         try {
-            // Ubicación: x=10, y=8 | Tamaño: 30x25 (proporcional)
-            doc.addImage(imgLogo, 'JPEG', 10, 8, 30, 25);
-        } catch (e) {
-            console.warn("No se pudo cargar el logoSNR en el PDF");
-        }
+            // El logo se ubica relativo al marginTop para que todo baje en conjunto
+            doc.addImage(imgLogo, 'PNG', 10, marginTop - 18, 35, 25);
+        } catch (e) { console.warn("Logo no disponible"); }
     }
-    // Intentamos capturar la imagen OTI del sidebar
 
-
-    // Título Principal (Desplazado a la derecha del logo)
     doc.setFontSize(14);
     doc.setFont(undefined, 'bold');
-    doc.text("SUPERINTENDENCIA DE NOTARIADO Y REGISTRO", 45, 18);
+    doc.text("SUPERINTENDENCIA DE NOTARIADO Y REGISTRO", 50, marginTop - 8);
 
-    // Subtítulo (Oficina)
     doc.setFontSize(10);
     doc.setFont(undefined, 'normal');
-    doc.text("Oficina de Registro de Instrumentos Públicos de Barranquilla", 45, 24);
+    doc.text("Oficina de Registro de Instrumentos Públicos de Barranquilla", 50, marginTop - 2);
 
-    // Fecha de Liquidación (Extremo derecho, un poco más abajo para no chocar)
     doc.setFontSize(9);
-    doc.text(`Fecha de Liquidación: ${fechaHoy}`, 200, 32, { align: 'right' });
+    doc.text(`Fecha de Liquidación: ${fechaHoy}`, 200, marginTop + 5, { align: 'right' });
     
-    doc.setLineWidth(0.5);
-    doc.line(10, 35, 200, 35); // Línea divisoria ajustada
+    doc.setLineWidth(0.4);
+    doc.line(10, marginTop + 8, 200, marginTop + 8); 
 
-    // --- BLOQUE DE DATOS DEL TRÁMITE (Bajamos el inicio a y=42) ---
-    doc.setFont(undefined, 'bold');
+    // --- 2. BLOQUE INFORMATIVO ---
+    let currentY = marginTop + 16;
+
     doc.setFontSize(10);
-    doc.text("DATOS DEL INTERESADO Y DEL INMUEBLE", 10, 42);
+    doc.setFont(undefined, 'bold');
+    doc.text("DATOS DEL INTERESADO Y DEL INMUEBLE", 10, currentY);
     
     doc.setFont(undefined, 'normal');
     doc.setFontSize(9);
-    doc.text(`Solicitante: ${solicitante.toUpperCase()}`, 10, 48);
-    doc.text(`Identificación: ${identificacion}`, 10, 53);
-    
+    doc.text(`Solicitante: ${solicitante}`, 10, currentY + 6);
+    doc.text(`Identificación: ${identificacion}`, 10, currentY + 11);
     doc.setFont(undefined, 'bold');
-    doc.text(`MATRÍCULA INMOBILIARIA: ${matriculaCompleta}`, 10, 59);
+    doc.text(`MATRÍCULA INMOBILIARIA: 040-${matriculaNum}`, 10, currentY + 17);
     
-    // Referencia Documento (Lado derecho)
+    // Referencias a la derecha
     doc.setFont(undefined, 'bold');
-    doc.text("REFERENCIA DEL DOCUMENTO", 120, 42);
-    
+    doc.text("REFERENCIA DEL DOCUMENTO", 120, currentY);
     doc.setFont(undefined, 'normal');
-    doc.text(`Escritura No: ${escritura}`, 120, 48);
-    doc.text(`Notaría/Origen: ${notaria.toUpperCase()}`, 120, 53);
-    doc.text(`Fecha Documento: ${fechaDocumento}`, 120, 59);
+    doc.text(`Escritura No: ${escritura}`, 120, currentY + 6);
+    doc.text(`Notaría/Origen: ${notaria}`, 120, currentY + 11);
+    doc.text(`Fecha Documento: ${fechaDocumento}`, 120, currentY + 17);
 
-    // --- TABLA DE ACTOS (Bajamos startY a 65 para dar espacio) ---
+    // --- 3. TABLA DE ACTOS ---
     const body = liquidacion.map(item => [
         item.cod,
         item.acto,
@@ -546,29 +536,33 @@ function exportarPDF() {
     ]);
 
     doc.autoTable({
-        startY: 65,
+        startY: currentY + 25,
         head: [['Código', 'Acto / Concepto', 'Base / Cant', 'Total Item']],
         body: body,
         theme: 'striped',
-        headStyles: { fillColor: [44, 62, 80] },
-        styles: { fontSize: 8 }
+        headStyles: { fillColor: [44, 62, 80], halign: 'center' },
+        styles: { fontSize: 8, cellPadding: 2 },
+        columnStyles: { 3: { halign: 'right' } } // Alinea el total a la derecha
     });
 
-    // --- TOTALES ---
+    // --- 4. TOTALES ---
     const totalFinal = liquidacion.reduce((acc, item) => acc + item.total, 0);
-    const finalY = doc.lastAutoTable.finalY + 12;
+    const finalTableY = doc.lastAutoTable.finalY + 12;
     doc.setFontSize(12);
     doc.setFont(undefined, 'bold');
-    doc.text(`TOTAL GENERAL A RECAUDAR: $ ${totalFinal.toLocaleString()}`, 200, finalY, { align: 'right' });
+    doc.text(`TOTAL GENERAL A RECAUDAR: $ ${totalFinal.toLocaleString()}`, 200, finalTableY, { align: 'right' });
 
-    // --- PIE DE PÁGINA ---
+    // --- 5. PIE DE PÁGINA (Posición fija en hoja Carta) ---
+    const footerY = 260; // Deja margen suficiente antes del final de la hoja (279mm)
+    doc.setLineWidth(0.2);
+    doc.line(10, footerY - 5, 200, footerY - 5); // Línea decorativa sobre el pie
+    
     doc.setFontSize(8);
     doc.setFont(undefined, 'normal');
-    const bottomY = 280;
-    doc.text("Este documento es una liquidación informativa y no constituye un recibo de pago oficial.", 10, bottomY);
-    doc.text(`Generado por: Yair B. Leal Guerra - Administrativo SNR Barranquilla`, 10, bottomY + 5);
+    doc.text("Este documento es una liquidación informativa y no constituye un recibo de pago oficial.", 10, footerY);
+    doc.text(`Generado por: Yair B. Leal Guerra - Administrativo SNR Barranquilla`, 10, footerY + 5);
 
-    doc.save(`Liquidacion_040_${matriculaNum || 'sin_matricula'}.pdf`);
+    doc.save(`Liquidacion_040_${matriculaNum}.pdf`);
 }
 
 //----DESDE ACA---
