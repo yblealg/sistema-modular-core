@@ -303,6 +303,7 @@ const DICCIONARIO_SIR = {
     "27": { acto: "DESENGLOBE", tarifa: "SIN CUANTIA", folios: "SI" },
     "28": { acto: "FIDUCIA", tarifa: "CON CUANTIA", folios: "NO" },
     "31": { acto: "SERVIDUMBRE (CON CUANTIA)", tarifa: "CON CUANTIA", folios: "NO" },
+    "32": { acto: "CANCELACION DEMANDA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "35": { acto: "DECLARACION CONSTRUCCION (CON)", tarifa: "CON CUANTIA", folios: "NO" },
     "36": { acto: "DACION EN PAGO", tarifa: "CON CUANTIA", folios: "NO" },
 
@@ -318,8 +319,14 @@ const DICCIONARIO_SIR = {
 
 
     "70": { acto: "CANCELACION HIPOTECA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "71": { acto: "CANCELACION DE COMODATO (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "74": { acto: "CANCELACION PROPIEDAD HORIZONTAL O COPROP (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "75": { acto: "ADMINISTRACION ANTICRETIACA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "76": { acto: "CANCELACION CONDICION RESOLUTORIA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "77": { acto: "CANCELACION ADMINISTRACION ANTICRETICA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "78": { acto: "CANCELACION AFECTACION FAMILIAR (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "84": { acto: "ARRENDAMIENTO (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "88": { acto: "CANCELACION FIDUCIA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
 
     "105": { acto: "ADJUDICACION UNIDAD AGRICOLA FAMILIAR (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
 
@@ -340,8 +347,12 @@ const DICCIONARIO_SIR = {
 
 
     "200": { acto: "ACTUALIZACION DE NOMENCLATURA", tarifa: "SIN CUANTIA", folios: "SI" },
+    "204": { acto: "CANCELACION DE ARRENDAMIENTO", tarifa: "SIN CUANTIA", folios: "SI" },
+
     "903": { acto: "ACTUALIZACION DE AREA Y/O LINDEROS", tarifa: "SIN CUANTIA", folios: "SI" },
     "906": { acto: "CAMBIO DE NOMBRE", tarifa: "SIN CUANTIA", folios: "SI" },
+    "907": { acto: "CAMBIO DE RAZON SOCIAL", tarifa: "SIN CUANTIA", folios: "SI" },
+    
     "1013": { acto: "TRANSFERENCIA DE DOMINIO TITULO CESION", tarifa: "CON CUANTIA", folios: "NO" }
 };
 
@@ -579,7 +590,7 @@ function exportarPDF() {
     const finalTableY = doc.lastAutoTable.finalY + 12;
     doc.setFontSize(12);
     doc.setFont(undefined, 'bold');
-    doc.text(`TOTAL GENERAL A RECAUDAR: $ ${totalFinal.toLocaleString()}`, 200, finalTableY, { align: 'right' });
+    doc.text(`VALOR TOTAL DERECHOS DE REGISTRO: $ ${totalFinal.toLocaleString()}`, 200, finalTableY, { align: 'right' });
 
     // --- 5. PIE DE PÁGINA (Posición fija en hoja Carta) ---
     const footerY = 260; // Deja margen suficiente antes del final de la hoja (279mm)
