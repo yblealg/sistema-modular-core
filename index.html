@@ -295,7 +295,7 @@ const DICCIONARIO_SIR = {
     "16": { acto: "ACLARACION", tarifa: "SIN CUANTIA", folios: "SI" },
     "17": { acto: "CANCELACION EMBARGO", tarifa: "SIN CUANTIA", folios: "NO" },
     "18": { acto: "AFECTACION A VIVIENDA FAMILIAR", tarifa: "SIN CUANTIA", folios: "SI" },
-    "19": { acto: "MATRICULAS", tarifa: "FIJA", folios: "NO", valor: 29500 },
+    "19": { acto: "MATRICULAS", tarifa: "FIJA", folios: "NO", valor: 15300 },
     "21": { acto: "ENGLOBE", tarifa: "SIN CUANTIA", folios: "SI" },
     "24": { acto: "ADJUDICACION BALDIO (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
 
@@ -304,6 +304,7 @@ const DICCIONARIO_SIR = {
     "28": { acto: "FIDUCIA", tarifa: "CON CUANTIA", folios: "NO" },
     "31": { acto: "SERVIDUMBRE (CON CUANTIA)", tarifa: "CON CUANTIA", folios: "NO" },
     "32": { acto: "CANCELACION DEMANDA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "33": { acto: "LIQUIDACIÓN COMUNIDAD (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "35": { acto: "DECLARACION CONSTRUCCION (CON)", tarifa: "CON CUANTIA", folios: "NO" },
     "36": { acto: "DACION EN PAGO", tarifa: "CON CUANTIA", folios: "NO" },
 
@@ -316,9 +317,13 @@ const DICCIONARIO_SIR = {
     "45": { acto: "HIPOTECA SUSTITUCIÓN GARANTÍA (CON CUANTIA )", tarifa: "CON CUANTIA", folios: "NO" },
 
     "48": { acto: "ESCISION (CON CUANTIA)", tarifa: "CON CUANTIA", folios: "NO" },
+    "49": { acto: "LIQUIDACION SOCIEDAD CONYUGAR (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "50": { acto: "FUSION (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "53": { acto: "AMPLIACION DE HIPOTECA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "61": { acto: "DONACIÓN INTERNACIONAL (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "63": { acto: "LIQUIDACIÓN SOCIEDAD CONYUGAL ESPECIAL (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "66": { acto: "LIQUIDACION SOCIEDAD COMERCIAL (CON CUANTIA )", tarifa: "CON CUANTIA", folios: "NO" },
+    "68": { acto: "LEASING (CON CUANTIA)", tarifa: "CON CUANTIA", folios: "NO" },
 
     "69": { acto: "HIPOTECA SUSTITUCIÓN GARANTÍA (SIN CUANTÍA)", tarifa: "SIN CUANTIA", folios: "SI" },
 
@@ -333,6 +338,9 @@ const DICCIONARIO_SIR = {
     "86": { acto: "FIDEICOMISO ESPECIAL SIN TRANSFERENCIA DERECHO DOMINIO (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "88": { acto: "CANCELACION FIDUCIA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "90": { acto: "FIDEICOMISO CIVIL CON TRANSFERENCIA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "98": { acto: "LAUDO ARBITRAL", tarifa: "CON CUANTIA", folios: "NO" },
+    "97": { acto: "LIQUIDACIÓN OBLIGATORIA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "99": { acto: "INSCRIPCIÓN FOLIO ADICIONAL", tarifa: "FIJA", folios: "NO", valor: 15300 },
 
 
     "100": { acto: "ESCISIÓN (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
@@ -345,18 +353,24 @@ const DICCIONARIO_SIR = {
     "111": { acto: "AMPLIACION RESGUARDO INDIGENA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "113": { acto: "INICIO DILIGENCIAS ADMINISTRATIVAS (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "114": { acto: "INICIO PROCESO EXPROPIACIÓN EXTINCIÓN (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "115": { acto: "OFERTA DE COMPRA EN BIEN RURAL (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "116": { acto: "DESLINDE DE TERRENOS DE LA NACIÓN (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     
     /* =================ACTUALIZACION CODIGOS SIR QUEDE POR 118 ================= */
     "118": { acto: "IDENTIDAD REGISTRAL A PREDIO BALDÍO DE LA NACIÓN (SIN CUANTÍA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "119": { acto: "INICIO PROCESO DE ORDENAMIENTO SOCIAL PROPIEDAD RURAL (SIN CUANTÍA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "120": { acto: "LIQUIDACION SOCIEDAD CONYUGAL (CON)", tarifa: "CON CUANTIA", folios: "NO" },
+    "121": { acto: "LOTEO (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "126": { acto: "ADJUDICACION BALDIO COM NEGRAS (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "127": { acto: "ADJUDICACION BALDIO RESGUARDOS INDIGENAS (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
 
     "128": { acto: "CESION TITULO GRATUITO BIENES FISCALES", tarifa: "EXENTO", folios: "NO" },
     "130": { acto: "INICIO PROCEDIMIENTO DE EXPROPIACIÓN POR VÍA ADMINISTRATIVA", tarifa: "SIN CUANTIA", folios: "SI" },
+    "131": { acto: "INICIO PROCEDIMIENTO DE EXTINCIÓN DEL DERECHO DE DOMINIO", tarifa: "SIN CUANTIA", folios: "SI" },
     "132": { acto: "INICIO PROCESO DE REVOCATORIA DIRECTA A LA ADJUDICACIÓN DE BALDÍO", tarifa: "SIN CUANTIA", folios: "SI" },
+    "133": { acto: "INICIO PROCESO CONDICIÓN RESOLUTORIA", tarifa: "SIN CUANTIA", folios: "SI" },
+    "134": { acto: "INICIO PROCESO CADUCIDAD ADMINISTRATIVA", tarifa: "SIN CUANTIA", folios: "SI" },
+
 
     "135": { acto: "ADJUDICACION BALDIO ENDTIDADES DE DERECHO PUBLICO(SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "136": { acto: "IDENTIFICACIÓN TERRENO BALDÍO DE LA NACIÓN (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
@@ -369,6 +383,7 @@ const DICCIONARIO_SIR = {
     "185": { acto: "DECLARATORIA DE SANEAMIENTO POR MINISTERIO DE LEY  (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
 
     "200": { acto: "ACTUALIZACION DE NOMENCLATURA", tarifa: "SIN CUANTIA", folios: "SI" },
+    "201": { acto: "INSCRIPCIÓN DE OFERTA", tarifa: "SIN CUANTIA", folios: "SI" },
     "202": { acto: "DONACIÓN EN PAGO ESPECIAL (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "204": { acto: "CANCELACION DE ARRENDAMIENTO", tarifa: "SIN CUANTIA", folios: "SI" },
     "210": { acto: "HIPOTECA ESPECIAL", tarifa: "SIN CUANTIA", folios: "SI" },
@@ -382,7 +397,7 @@ const DICCIONARIO_SIR = {
     "501": { acto: "CONTRATO DERECHO DE USO (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "555": { acto: "DEPURACIÓN (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "619": { acto: "DECLARATORIA POSESIÓN REGULAR LEY 1183/2008 (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
-    
+    "888": { acto: "OTROS", tarifa: "CON CUANTIA", folios: "NO" },
     "903": { acto: "ACTUALIZACION DE AREA Y/O LINDEROS", tarifa: "SIN CUANTIA", folios: "SI" },
     "906": { acto: "CAMBIO DE NOMBRE", tarifa: "SIN CUANTIA", folios: "SI" },
     "907": { acto: "CAMBIO DE RAZON SOCIAL", tarifa: "SIN CUANTIA", folios: "SI" },
@@ -414,19 +429,30 @@ document.getElementById('cod').addEventListener('input', function () {
 /* ================= FUNCIONES ================= */
 
 function agregarActo() {
-
     const cod = document.getElementById('cod').value;
     const info = DICCIONARIO_SIR[cod];
 
     if (!info) return;
 
-    const cuantia = parseFloat(document.getElementById('base').value) || 0;
+    // Capturamos la cuantía, si está vacío o es 888 sin valor, será 0
+    let cuantia = parseFloat(document.getElementById('base').value) || 0;
     const folios = parseInt(document.getElementById('folios').value) || 1;
 
     let derechos = 0;
 
-    // Cálculo según tipo de tarifa
-    if (info.tarifa === "CON CUANTIA") {
+    // --- LÓGICA PARA CÓDIGO 888 (OTROS) ---
+    // Si es el código 888 y la cuantía es 0, saltamos el cálculo
+    if (cod === "888" && cuantia === 0) {
+        derechos = 0;
+    } 
+    // --- CÁLCULO SEGÚN TIPO DE TARIFA ---
+    else if (info.tarifa === "CON CUANTIA") {
+        
+        // Si por error no pusieron cuantía en un acto que la requiere (que no sea 888)
+        if (cuantia <= 0 && cod !== "888") {
+            alert("Este acto requiere una cuantía mayor a 0");
+            return;
+        }
 
         if (cuantia <= 12852101) derechos = 53100;
         else if (cuantia <= 192778606) derechos = cuantia * 0.00911;
@@ -435,51 +461,40 @@ function agregarActo() {
         else derechos = cuantia * 0.01333;
 
     } else if (info.tarifa === "SIN CUANTIA") {
-
+        // Usamos 15300 como base para folios adicionales si es el caso
         derechos = 29500 + (folios > 1 ? (folios - 1) * 15300 : 0);
 
     } else if (info.tarifa === "FIJA") {
-
+        // Aquí entraría tu código 19 con los 15300 que corregimos
         derechos = info.valor;
 
     } else if (info.tarifa === "ESPECIAL") {
-
+        // Cálculo para Extinción de Dominio o similares (Término medio)
         derechos = Math.max(26550, (cuantia * 0.00911) * 0.5);
 
     } else if (info.tarifa === "EXENTO") {
-
         derechos = 0;
     }
 
-    // 2% + redondeo
-    const total = (info.tarifa === "EXENTO") ? 0 : Math.ceil((derechos * 1.02) / 100) * 100;
+    // --- 2% (Vivienda/Ley) + Redondeo al centenar superior ---
+    // Si el acto es exento o el resultado es 0 (como en el 888 sin valor), el total es 0
+    const total = (info.tarifa === "EXENTO" || derechos === 0) 
+                  ? 0 
+                  : Math.ceil((derechos * 1.02) / 100) * 100;
 
     liquidacion.push({
         cod,
         acto: info.acto,
+        // Si es con cuantía, mostramos el dinero; si no, mostramos la cantidad de folios
         base: (info.tarifa === "CON CUANTIA") ? cuantia : folios,
         total
     });
 
     render();
-}
-
-/* ================= CERTIFICADOS ================= */
-
-function agregarCert() {
-
-    const c = parseInt(document.getElementById('cantCert').value);
-
-    if (c > 0) {
-        liquidacion.push({
-            cod: "CERT",
-            acto: "CERTIFICADO",
-            base: c,
-            total: c * VALOR_CERT
-        });
-    }
-
-    render();
+    
+    // Limpiamos los campos para el siguiente acto
+    document.getElementById('base').value = "";
+    document.getElementById('folios').value = "1";
 }
 
 /* ================= RENDER ================= */
