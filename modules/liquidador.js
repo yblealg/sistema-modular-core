@@ -25,32 +25,33 @@ function agregarActoALista() {
         return;
     }
 
-    if (infoActo.tarifa === "CON CUANTIA" && cuantiaInput <= 0) {
-        alert("Los actos con cuantía requieren un valor base.");
-        return;
-    }
-
-    // 1. Cálculo de Derechos de Registro (Fórmulas progresivas 2026)
     let derechos = 0;
-    if (infoActo.tarifa === "CON CUANTIA") {
-        if (cuantiaInput <= 12852101) {
-            derechos = TARIFA_MIN_CUANTIA;
-        } else if (cuantiaInput <= 192778606) {
-            derechos = cuantiaInput * 0.00911;
-        } else if (cuantiaInput <= 334149656) {
-            derechos = cuantiaInput * 0.01131;
-        } else if (cuantiaInput <= 494798857) {
-            derechos = cuantiaInput * 0.01260;
-        } else {
-            derechos = cuantiaInput * 0.01333;
-        }
+    let aplicarImpuesto = true; // Por defecto todos pagan el 2%
+
+    // --- LÓGICA ESPECIAL PARA EL CÓDIGO 888 ---
+    if (codigo === "888") {
+        derechos = cuantiaInput; // Valor neto manual
+        aplicarImpuesto = false; // No le sumamos el 2% de conservación
     } 
-    else if (infoActo.tarifa === "ESPECIAL") { // Caso VIS
+    // --- LÓGICA PARA LOS DEMÁS ACTOS ---
+    else if (infoActo.tarifa === "CON CUANTIA") {
+        if (cuantiaInput <= 0) {
+            alert("Los actos con cuantía requieren un valor base.");
+            return;
+        }
+        // Rangos 2026
+        if (cuantiaInput <= 12852101) derechos = TARIFA_MIN_CUANTIA;
+        else if (cuantiaInput <= 192778606) derechos = cuantiaInput * 0.00911;
+        else if (cuantiaInput <= 334149656) derechos = cuantiaInput * 0.01131;
+        else if (cuantiaInput <= 494798857) derechos = cuantiaInput * 0.01260;
+        else derechos = cuantiaInput * 0.01333;
+    } 
+    else if (infoActo.tarifa === "ESPECIAL") {
         derechos = (cuantiaInput * 0.00911) * 0.5;
         if (derechos < 26550) derechos = 26550; 
     }
     else if (infoActo.tarifa === "SIN CUANTIA" || infoActo.tarifa === "FIJA") {
-        derechos = (codigo === "12") ? 17500 : VALOR_SIN_CUANTIA;
+        derechos = (codigo === "12") ? 17500 : (infoActo.valor || VALOR_SIN_CUANTIA);
     }
 
     // 2. Cálculo de Folios Adicionales
@@ -59,19 +60,23 @@ function agregarActoALista() {
         vlrFolios = (foliosInput - 1) * VALOR_FOLIO_ADIC;
     }
 
-    // 3. Subtotal + Conservación Documental (2%) + Redondeo al centenar
+    // 3. Subtotal + Conservación Documental (Solo si aplica) + Redondeo
     let subtotal = derechos + vlrFolios;
-    let totalConImpuesto = subtotal * 1.02;
-    let totalRedondeado = Math.ceil(totalConImpuesto / 100) * 100;
+    let totalFinal;
 
-    // Guardar en la lista
+    if (!aplicarImpuesto || subtotal === 0) {
+        totalFinal = subtotal; // El 888 pasa derecho sin sumarle nada
+    } else {
+        totalFinal = Math.ceil((subtotal * 1.02) / 100) * 100;
+    }
+
     listaActosAsociados.push({
         id: Date.now(),
         codigo: codigo,
         nombre: infoActo.acto,
         cuantia: cuantiaInput,
         folios: (infoActo.folios === "SI") ? foliosInput : 1,
-        total: totalRedondeado
+        total: totalFinal
     });
 
     limpiarCampos();
