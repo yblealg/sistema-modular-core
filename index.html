@@ -439,57 +439,46 @@ function agregarActo() {
 
     let derechos = 0;
 
-    // --- 1. PRIORIDAD TOTAL: CÓDIGO 888 (VALOR MANUAL) ---
-    // Si es 888, derechos es igual a lo que escribas (0, 15000, lo que sea)
-    // Esto evita que entre a los rangos de abajo.
+    // 1. PRIORIDAD: CÓDIGO 888
     if (cod === "888") {
         derechos = cuantia; 
     } 
-    // --- 2. CÁLCULO SEGÚN TIPO DE TARIFA (Demás códigos) ---
+    // 2. OTROS TIPOS DE TARIFA
     else if (info.tarifa === "CON CUANTIA") {
-        
-        // Bloqueo de seguridad para otros actos que SÍ requieren plata
-        if (cuantia <= 0) {
-            alert("Este acto requiere una cuantía mayor a 0");
-            return;
-        }
-
-        // Rangos oficiales SNR
+        if (cuantia <= 0) { alert("Requiere cuantía"); return; }
         if (cuantia <= 12852101) derechos = 53100;
         else if (cuantia <= 192778606) derechos = cuantia * 0.00911;
         else if (cuantia <= 334149656) derechos = cuantia * 0.01131;
         else if (cuantia <= 494798857) derechos = cuantia * 0.01260;
         else derechos = cuantia * 0.01333;
-
     } else if (info.tarifa === "SIN CUANTIA") {
         derechos = 29500 + (folios > 1 ? (folios - 1) * 15300 : 0);
-
     } else if (info.tarifa === "FIJA") {
         derechos = info.valor;
-
     } else if (info.tarifa === "ESPECIAL") {
         derechos = Math.max(26550, (cuantia * 0.00911) * 0.5);
-
     } else if (info.tarifa === "EXENTO") {
         derechos = 0;
     }
 
-    // --- 3. TOTAL CON IMPUESTO (2%) Y REDONDEO ---
-    const total = (info.tarifa === "EXENTO" || (cod === "888" && cuantia === 0)) 
-                  ? 0 
-                  : Math.ceil((derechos * 1.02) / 100) * 100;
+    // 3. LÓGICA DE TOTALES SIN 2% PARA EL 888
+    let total;
+    if (info.tarifa === "EXENTO" || (cod === "888" && cuantia === 0)) {
+        total = 0;
+    } else if (cod === "888") {
+        total = derechos; // Valor neto
+    } else {
+        total = Math.ceil((derechos * 1.02) / 100) * 100;
+    }
 
     liquidacion.push({
         cod,
         acto: info.acto,
-        // Guardamos cuantia si es con cuantía o 888, sino guardamos folios
         base: (info.tarifa === "CON CUANTIA" || cod === "888") ? cuantia : folios,
         total
     });
 
     render();
-    
-    // Limpiar campos
     document.getElementById('base').value = "";
     document.getElementById('folios').value = "1";
 }
