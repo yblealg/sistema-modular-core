@@ -210,3 +210,32 @@ function exportarPDF() {
     // Descargar el archivo
     doc.save(`liquidacion_${Date.now()}.pdf`);
 }
+
+
+/**
+ * Validación en tiempo real del Código SIR
+ * Se dispara cada vez que escribes en el campo de código
+ */
+document.getElementById('txtCodigoActo').addEventListener('input', function() {
+    const codigo = this.value.trim();
+    const labelNombre = document.getElementById('lblNombreActo');
+    
+    // 1. Si el código existe en el DICCIONARIO_SIR
+    if (DICCIONARIO_SIR[codigo]) {
+        labelNombre.textContent = DICCIONARIO_SIR[codigo].acto;
+        labelNombre.style.color = "#2c3e50"; // Color azul oscuro institucional
+        labelNombre.style.fontWeight = "bold";
+    } 
+    // 2. Si el campo tiene algo pero no coincide con nada
+    else if (codigo.length > 0) {
+        labelNombre.textContent = "⚠️ CÓDIGO INEXISTENTE EN SIR";
+        labelNombre.style.color = "#e74c3c"; // Rojo de alerta
+        labelNombre.style.fontWeight = "bold";
+    } 
+    // 3. Si el campo está vacío
+    else {
+        labelNombre.textContent = "Esperando código...";
+        labelNombre.style.color = "#7f8c8d"; // Gris neutro
+        labelNombre.style.fontWeight = "normal";
+    }
+});
