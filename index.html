@@ -483,6 +483,61 @@ function agregarActo() {
     document.getElementById('folios').value = "1";
 }
 
+
+/* ================= FUNCIÓN PARA CERTIFICADOS ================= */
+
+function agregarCert() {
+    const cantCertInput = document.getElementById('cantCert');
+    const cantidad = parseInt(cantCertInput.value) || 0;
+
+    if (cantidad <= 0) {
+        alert("Por favor, ingresa una cantidad de certificados válida.");
+        return;
+    }
+
+    // El valor ya lo tienes definido arriba como VALOR_CERT = 24300
+    const totalCertificados = cantidad * VALOR_CERT;
+
+    // Lo añadimos al arreglo de liquidacion con un formato compatible con tu tabla
+    liquidacion.push({
+        cod: "CERT",
+        acto: "CERTIFICADO DE TRADICION",
+        base: cantidad,
+        total: totalCertificados
+    });
+
+    // Refrescamos la tabla y limpiamos el input
+    render();
+    cantCertInput.value = 0;
+}
+
+/* ================= VALIDACIÓN DE CÓDIGO INEXISTENTE ================= */
+
+// Modifica tu evento 'input' del código para que maneje el error del "7777"
+document.getElementById('cod').addEventListener('input', function () {
+    const info = DICCIONARIO_SIR[this.value];
+    const boxC = document.getElementById('boxCuantia');
+    const boxF = document.getElementById('boxFolios');
+    const nombreActoInput = document.getElementById('nombreActo');
+
+    if (info) {
+        nombreActoInput.value = info.acto;
+        nombreActoInput.style.color = "black";
+        boxC.style.visibility = (info.tarifa === "CON CUANTIA" || info.tarifa === "ESPECIAL") ? "visible" : "hidden";
+        boxF.style.display = (info.folios === "SI") ? "block" : "none";
+    } else {
+        if (this.value.length > 0) {
+            nombreActoInput.value = "⚠️ CÓDIGO INEXISTENTE";
+            nombreActoInput.style.color = "red";
+            boxC.style.visibility = "hidden";
+            boxF.style.display = "none";
+        } else {
+            nombreActoInput.value = "";
+            boxC.style.visibility = "hidden";
+            boxF.style.display = "none";
+        }
+    }
+});
 /* ================= RENDER ================= */
 
 function render() {
