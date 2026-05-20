@@ -310,16 +310,21 @@ const DICCIONARIO_SIR = {
 
     "37": { acto: "ACLARACION DE LA CUANTIA", tarifa: "SIN CUANTIA", folios: "SI" },
     "38": { acto: "VIVIENDA DE INTERES SOCIAL (VIS)", tarifa: "ESPECIAL", folios: "NO" },
+
     "40": { acto: "USUFRUCTO (CON CUANTIA)", tarifa: "CON CUANTIA", folios: "NO" },
     "41": { acto: "ADJUDICACION BALDIO (CON CUANTIA)", tarifa: "CON CUANTIA", folios: "NO" },
 
     "43": { acto: "DECLARACION CONSTRUCCION (SIN)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "44": { acto: "RESTITUCIÓN FIDUCIA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "45": { acto: "HIPOTECA SUSTITUCIÓN GARANTÍA (CON CUANTIA )", tarifa: "CON CUANTIA", folios: "NO" },
+    "47": { acto: "RESTITUCION FIDEICOMISO (CON CUANTIA)", tarifa: "CON CUANTIA", folios: "NO" },
 
     "48": { acto: "ESCISION (CON CUANTIA)", tarifa: "CON CUANTIA", folios: "NO" },
     "49": { acto: "LIQUIDACION SOCIEDAD CONYUGAR (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "50": { acto: "FUSION (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "53": { acto: "AMPLIACION DE HIPOTECA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "60": { acto: "RESTITUCIÓN FIDUCIA (CON CUANTIA)", tarifa: "CON CUANTIA", folios: "NO" },
+    
     "61": { acto: "DONACIÓN INTERNACIONAL (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "63": { acto: "LIQUIDACIÓN SOCIEDAD CONYUGAL ESPECIAL (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "66": { acto: "LIQUIDACION SOCIEDAD COMERCIAL (CON CUANTIA )", tarifa: "CON CUANTIA", folios: "NO" },
@@ -329,6 +334,8 @@ const DICCIONARIO_SIR = {
 
     "70": { acto: "CANCELACION HIPOTECA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "71": { acto: "CANCELACION DE COMODATO (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "72": { acto: "REFORMA PROPIEDAD HORIZONTAL O COPROPIEDAD (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "73": { acto: "REGIMEN DE COPROPIEDAD (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "74": { acto: "CANCELACION PROPIEDAD HORIZONTAL O COPROP (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "75": { acto: "ADMINISTRACION ANTICRETIACA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "76": { acto: "CANCELACION CONDICION RESOLUTORIA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
@@ -337,9 +344,16 @@ const DICCIONARIO_SIR = {
     "84": { acto: "ARRENDAMIENTO (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "86": { acto: "FIDEICOMISO ESPECIAL SIN TRANSFERENCIA DERECHO DOMINIO (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "88": { acto: "CANCELACION FIDUCIA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "89": { acto: "RESTITUCIÓN FIDEICOMISO (CON CUANTIA)", tarifa: "CON CUANTIA", folios: "NO" },
     "90": { acto: "FIDEICOMISO CIVIL CON TRANSFERENCIA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "91": { acto: "RESTITUCIÓN DE FIDUCIA MERCANTIL (CON CUANTIA)", tarifa: "CON CUANTIA", folios: "NO" },
+    "92": { acto: "RELOTEO (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "93": { acto: "RESCISIÓN DE CONTRATO (CON CUANTIA)", tarifa: "CON CUANTIA", folios: "NO" },
+    "94": { acto: "RESOLUCIÓN DE CONTRATO (CON CUANTIA)", tarifa: "CON CUANTIA", folios: "NO" },
+    "95": { acto: "RESCILIACIÓN (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "98": { acto: "LAUDO ARBITRAL", tarifa: "CON CUANTIA", folios: "NO" },
-    "97": { acto: "LIQUIDACIÓN OBLIGATORIA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "97": { acto: "LIQUIDACIÓN OBLIGATORIA (SIN CUANTIA)", tarifa: "CON CUANTIA", folios: "NO" },
+
     "99": { acto: "INSCRIPCIÓN FOLIO ADICIONAL", tarifa: "FIJA", folios: "NO", valor: 15300 },
 
 
@@ -347,6 +361,7 @@ const DICCIONARIO_SIR = {
     "103": { acto: "DONACIÓN (CON CUANTIA)", tarifa: "CON CUANTIA", folios: "NO" },
     "105": { acto: "ADJUDICACION UNIDAD AGRICOLA FAMILIAR (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "107": { acto: "EXTINCIÓN DEL DERECHO DE DOMINIO PRIVADO (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "108": { acto: "REVERSIÓN DEL BALDÍO (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
 
 
     "110": { acto: "CONSTITUCION RESGUARDO INDIGENA", tarifa: "EXENTO", folios: "NO" },
@@ -355,16 +370,25 @@ const DICCIONARIO_SIR = {
     "114": { acto: "INICIO PROCESO EXPROPIACIÓN EXTINCIÓN (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "115": { acto: "OFERTA DE COMPRA EN BIEN RURAL (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "116": { acto: "DESLINDE DE TERRENOS DE LA NACIÓN (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
-    
-    /* =================ACTUALIZACION CODIGOS SIR QUEDE POR 118 ================= */
+    "117": { acto: "PROCESO DE CLARIFICACION TITULO DE ORIGEN COLONIAL (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+ 
     "118": { acto: "IDENTIDAD REGISTRAL A PREDIO BALDÍO DE LA NACIÓN (SIN CUANTÍA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    
     "119": { acto: "INICIO PROCESO DE ORDENAMIENTO SOCIAL PROPIEDAD RURAL (SIN CUANTÍA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "120": { acto: "LIQUIDACION SOCIEDAD CONYUGAL (CON)", tarifa: "CON CUANTIA", folios: "NO" },
     "121": { acto: "LOTEO (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "122": { acto: "PROHIBICION DE FRACCIONAMIENTO (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "123": { acto: "PROHIBICIÓN DE TRANSFERENCIA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "124": { acto: "PROHIBICIÓN DE APORTAR A SOCIEDADES (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "126": { acto: "ADJUDICACION BALDIO COM NEGRAS (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "127": { acto: "ADJUDICACION BALDIO RESGUARDOS INDIGENAS (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
-
     "128": { acto: "CESION TITULO GRATUITO BIENES FISCALES", tarifa: "EXENTO", folios: "NO" },
+   
+   
+    /* =================ACTUALIZACION CODIGOS SIR QUEDE POR 129 ================= */
+
+    
+    "129": { acto: "REVOCACIÓN ADJUDICACIÓN PROP. COLECTIVA COMUNIADES NEGRAS (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "130": { acto: "INICIO PROCEDIMIENTO DE EXPROPIACIÓN POR VÍA ADMINISTRATIVA", tarifa: "SIN CUANTIA", folios: "SI" },
     "131": { acto: "INICIO PROCEDIMIENTO DE EXTINCIÓN DEL DERECHO DE DOMINIO", tarifa: "SIN CUANTIA", folios: "SI" },
     "132": { acto: "INICIO PROCESO DE REVOCATORIA DIRECTA A LA ADJUDICACIÓN DE BALDÍO", tarifa: "SIN CUANTIA", folios: "SI" },
@@ -374,9 +398,12 @@ const DICCIONARIO_SIR = {
 
     "135": { acto: "ADJUDICACION BALDIO ENDTIDADES DE DERECHO PUBLICO(SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "136": { acto: "IDENTIFICACIÓN TERRENO BALDÍO DE LA NACIÓN (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "137": { acto: "RECTIFICACIÓN DE AREA Y LINDEROS (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "146": { acto: "RATIFICACIÓN (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "150": { acto: "ADJUDICACION INMUEBLES RURALES (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
 
     "153": { acto: "DECLARATORIA PREDIO SALIO DOMINIO NACIÓN Y CONSERVA BIEN PRIVADO  (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "154": { acto: "PROTECCIÓN PROVISIONAL TERRITORIOS ANCENTRALES (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
 
     "156": { acto: "EXPROPIACION", tarifa: "CON CUANTIA", folios: "NO" },
     "157": { acto: "AUTORIZACION PARA ENAJENAR BIEN INMUEBLE DE MENOR DE EDAD (CON)", tarifa: "CON CUANTIA", folios: "NO" },
@@ -385,6 +412,7 @@ const DICCIONARIO_SIR = {
     "200": { acto: "ACTUALIZACION DE NOMENCLATURA", tarifa: "SIN CUANTIA", folios: "SI" },
     "201": { acto: "INSCRIPCIÓN DE OFERTA", tarifa: "SIN CUANTIA", folios: "SI" },
     "202": { acto: "DONACIÓN EN PAGO ESPECIAL (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+    "203": { acto: "PACTO DE RETROVENTA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "204": { acto: "CANCELACION DE ARRENDAMIENTO", tarifa: "SIN CUANTIA", folios: "SI" },
     "210": { acto: "HIPOTECA ESPECIAL", tarifa: "SIN CUANTIA", folios: "SI" },
     "250": { acto: "FUSIÓN (CON CUANTIA PERO ERROR SIR)", tarifa: "CON CUANTIA", folios: "NO" },
@@ -393,6 +421,8 @@ const DICCIONARIO_SIR = {
 
     "300": { acto: "ESTAMPILLA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "369": { acto: "DERECHO DE PREFERENCIA (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
+
+    "474": { acto: "RUPTA - REGISTRO UNICO DE PREDIOS Y TERRITORIOS ABANDONADOS (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
 
     "501": { acto: "CONTRATO DERECHO DE USO (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
     "555": { acto: "DEPURACIÓN (SIN CUANTIA)", tarifa: "SIN CUANTIA", folios: "SI" },
