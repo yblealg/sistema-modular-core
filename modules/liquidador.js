@@ -157,35 +157,88 @@ function borrarLiquidacionTotal() {
 }
 
 function exportarPDF() {
-    if (listaActosAsociados.length === 0) {
+    if (liquidacion.length === 0) {
         alert("No hay actos para exportar.");
         return;
     }
 
+    // --- 1. GUARDAR EN BASE DE DATOS Y GENERAR RADICADO ---
+    // Capturamos los datos de los inputs del HTML
+    const datosTramite = {
+        solicitante: document.getElementById('txtSolicitante')?.value || "NO REPORTADO",
+        identificacion: document.getElementById('txtIdSolicitante')?.value || "N/A",
+        matricula: document.getElementById('txtMatriculaNum')?.value || "SIN NÚMERO",
+        escritura: document.getElementById('txtEscritura')?.value || "N/A",
+        notaria: document.getElementById('txtNotaria')?.value || "N/A",
+        actos: liquidacion,
+        total: liquidacion.reduce((acc, item) => acc + item.total, 0)
+    };
+
+    // Llamamos a la función de base-datos.js para obtener el radicado
+    const nuevoRadicado = guardarTramite(datosTramite);
+
+    // --- 2. INICIAR GENERACIÓN DE PDF ---
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+    const doc = new jsPDF('p', 'mm', 'letter');
 
     // Encabezado Institucional
     doc.setFontSize(16);
+    doc.setFont(undefined, 'bold');
     doc.text("SUPERINTENDENCIA DE NOTARIADO Y REGISTRO", 105, 15, { align: 'center' });
-    doc.setFontSize(12);
-    doc.text("ORIP Barranquilla - Liquidación de Derechos de Registro", 105, 22, { align: 'center' });
-    doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 105, 29, { align: 'center' });
+    
+    doc.setFontSize(11);
+    doc.setFont(undefined, 'normal');
+    doc.text("Oficina de Registro de Instrumentos Públicos de Barranquilla", 105, 21, { align: 'center' });
+    
+    // Insertar el Radicado Interno (esto le da validez a tu consulta posterior)
+    doc.setFont(undefined, 'bold');
+    doc.text(`RADICADO INTERNO: ${nuevoRadicado}`, 105, 28, { align: 'center' });
+    
+    doc.setFontSize(9);
+    doc.setFont(undefined, 'normal');
+    doc.text(`Fecha de Liquidación: ${new Date().toLocaleString()}`, 200, 35, { align: 'right' });
 
-    // Preparar los datos de la tabla
-    const columnas = ["Código", "Acto", "Base / Cant", "Total Item"];
-    const filas = [];
-    let granTotal = 0;
+    // Línea divisoria
+    doc.setLineWidth(0.5);
+    doc.line(10, 38, 200, 38);
 
-    listaActosAsociados.forEach(item => {
-        granTotal += item.total;
-        filas.push([
-            item.codigo,
-            item.nombre,
-            item.cuantia > 0 ? `$${item.cuantia.toLocaleString('es-CO')}` : "N/A",
-            `$${item.total.toLocaleString('es-CO')}`
-        ]);
+    // --- 3. PREPARAR TABLA DE ACTOS ---
+    const columnas = ["Código", "Acto / Concepto", "Base / Cuantía", "Total Item"];
+    const filas = liquidacion.map(item => [
+        item.cod,
+        item.acto,
+        item.base > 0 ? `$ ${item.base.toLocaleString('es-CO')}` : "N/A",
+        `$ ${item.total.toLocaleString('es-CO')}`
+    ]);
+
+    doc.autoTable({
+        startY: 45,
+        head: [columnas],
+        body: filas,
+        theme: 'striped',
+        headStyles: { fillColor: [44, 62, 80], halign: 'center' },
+        styles: { fontSize: 9 },
+        columnStyles: { 3: { halign: 'right' } }
     });
+
+    // --- 4. TOTAL Y PIE DE PÁGINA ---
+    const granTotal = datosTramite.total;
+    const finalY = doc.lastAutoTable.finalY + 15;
+    
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'bold');
+    doc.text(`TOTAL DERECHOS DE REGISTRO: $ ${granTotal.toLocaleString('es-CO')}`, 200, finalY, { align: 'right' });
+
+    doc.setFontSize(8);
+    doc.setFont(undefined, 'normal');
+    doc.text("Este documento es una liquidación informativa y no constituye un recibo de pago oficial.", 10, 260);
+    doc.text(`Generado por: Yair B. Leal Guerra - Administrativo SNR Barranquilla`, 10, 265);
+
+    // Guardar el archivo con el número de matrícula y el radicado
+    doc.save(`Liq_${datosTramite.matricula}_${nuevoRadicado}.pdf`);
+    
+    alert(`Trámite guardado y PDF generado.\nRadicado: ${nuevoRadicado}`);
+}
 
     // Crear la tabla en el PDF
     doc.autoTable({

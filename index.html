@@ -670,18 +670,34 @@ function exportarPDF() {
         return;
     }
 
+    // --- NUEVO: GUARDAR EN BASE DE DATOS LOCAL ANTES DE GENERAR ---
+    const datosParaGuardar = {
+        solicitante: document.getElementById('txtSolicitante').value.toUpperCase() || "NO REPORTADO",
+        identificacion: document.getElementById('txtIdSolicitante').value || "N/A",
+        matricula: document.getElementById('txtMatriculaNum').value || "SIN NÚMERO",
+        escritura: document.getElementById('txtEscritura').value || "N/A",
+        notaria: document.getElementById('txtNotaria').value.toUpperCase() || "N/A",
+        fechaDoc: document.getElementById('fechaDoc').value || "N/A",
+        actos: liquidacion,
+        total: liquidacion.reduce((acc, item) => acc + item.total, 0)
+    };
+
+    // Llamamos a la función de base-datos.js para generar el radicado y guardar
+    const miRadicado = guardarTramite(datosParaGuardar);
+    // ------------------------------------------------------------
+
     const { jsPDF } = window.jspdf;
     // Configurado específicamente para papel Carta (letter)
     const doc = new jsPDF('p', 'mm', 'letter'); 
 
     // --- VARIABLES DE POSICIÓN ---
     const marginTop = 30; // Espacio y medio desde el borde superior
-    const solicitante = document.getElementById('txtSolicitante').value.toUpperCase() || "NO REPORTADO";
-    const identificacion = document.getElementById('txtIdSolicitante').value || "N/A";
-    const matriculaNum = document.getElementById('txtMatriculaNum').value || "SIN NÚMERO";
-    const escritura = document.getElementById('txtEscritura').value || "N/A";
-    const notaria = document.getElementById('txtNotaria').value.toUpperCase() || "N/A";
-    const fechaDocumento = document.getElementById('fechaDoc').value || "N/A";
+    const solicitante = datosParaGuardar.solicitante;
+    const identificacion = datosParaGuardar.identificacion;
+    const matriculaNum = datosParaGuardar.matricula;
+    const escritura = datosParaGuardar.escritura;
+    const notaria = datosParaGuardar.notaria;
+    const fechaDocumento = datosParaGuardar.fechaDoc;
     const fechaHoy = document.getElementById('fechaLiq').value;
 
     // --- 1. ENCABEZADO E IMAGEN ---
@@ -704,11 +720,15 @@ function exportarPDF() {
     doc.setFontSize(9);
     doc.text(`Fecha de Liquidación: ${fechaHoy}`, 200, marginTop + 5, { align: 'right' });
     
+    // Mostramos el radicado generado en el PDF
+    doc.setFont(undefined, 'bold');
+    doc.text(`RADICADO INTERNO: ${miRadicado}`, 200, marginTop + 10, { align: 'right' });
+    
     doc.setLineWidth(0.4);
-    doc.line(10, marginTop + 8, 200, marginTop + 8); 
+    doc.line(10, marginTop + 12, 200, marginTop + 12); 
 
     // --- 2. BLOQUE INFORMATIVO ---
-    let currentY = marginTop + 16;
+    let currentY = marginTop + 18;
 
     doc.setFontSize(10);
     doc.setFont(undefined, 'bold');
@@ -764,14 +784,16 @@ function exportarPDF() {
     doc.text("Este documento es una liquidación informativa y no constituye un recibo de pago oficial.", 10, footerY);
     doc.text(`Generado por: Yair B. Leal Guerra - Administrativo SNR Barranquilla`, 10, footerY + 5);
 
-    doc.save(`Liquidacion_040_${matriculaNum}.pdf`);
+    doc.save(`Liquidacion_040_${matriculaNum}_${miRadicado}.pdf`);
+    
+    alert("Liquidación registrada con el Radicado: " + miRadicado);
 }
 
-//----DESDE ACA---
 // 1. Cargar fecha de hoy al abrir el sistema
 document.addEventListener('DOMContentLoaded', () => {
     const hoy = new Date().toISOString().split('T')[0];
-    document.getElementById('fechaLiq').value = hoy;
+    const inputFecha = document.getElementById('fechaLiq');
+    if (inputFecha) inputFecha.value = hoy;
 });
 
 // 2. Función para actualizar el resumen en tiempo real
