@@ -682,8 +682,15 @@ function exportarPDF() {
     };
 
     // Llamamos a la función de base-datos.js para generar el radicado y guardar
-    const miRadicado = guardarTramite(datosParaGuardar);
-    // ------------------------------------------------------------
+    //const miRadicado = guardarTramite(datosParaGuardar);
+    // const miRadicado = guardarTramite(datosParaGuardar); 
+    const fecha = new Date();
+    const anio = fecha.getFullYear();
+    const mes = fecha.getMonth() + 1; // Los meses en JS van de 0 a 11
+    const aleatorio = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+
+    const miRadicado = `${anio}-040-${mes}-${aleatorio}`;
+        // ------------------------------------------------------------
 
     const { jsPDF } = window.jspdf;
     // Configurado específicamente para papel Carta (letter)
