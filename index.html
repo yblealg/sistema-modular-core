@@ -277,7 +277,54 @@
 <script>
 
 /* =================CÓDIGO ACTOS SIR ================= */
+/* ============================================================
+   LÓGICA DE BASE DE DATOS (Integrada para evitar bloqueos)
+   ============================================================ */
 
+function generarRadicadoOficial() {
+    // Usamos nombres de variables únicos (fechaDB) para que no choquen con el resto del código
+    const fechaDB = new Date().toISOString().split('T')[0].replace(/-/g, '');
+    let contadorDB = parseInt(localStorage.getItem('contador_snr')) || 1;
+    
+    const radicadoDB = `LR-${fechaDB}-${String(contadorDB).padStart(3, '0')}`;
+    
+    localStorage.setItem('contador_snr', contadorDB + 1);
+    return radicadoDB;
+}
+
+function guardarTramiteOficial(datos) {
+    try {
+        const radicado = generarRadicadoOficial();
+        const paquete = {
+            ...datos,
+            radicado: radicado,
+            fechaSistema: new Date().toLocaleString()
+        };
+
+        // Guardar el trámite individual
+        localStorage.setItem(radicado, JSON.stringify(paquete));
+        
+        // Actualizar el historial general
+        let historial = JSON.parse(localStorage.getItem('historial_snr')) || [];
+        historial.push({ 
+            radicado: radicado, 
+            solicitante: datos.solicitante, 
+            total: datos.total,
+            matricula: datos.matricula 
+        });
+        localStorage.setItem('historial_snr', JSON.stringify(historial));
+
+        return radicado;
+    } catch (e) {
+        console.error("Error en persistencia:", e);
+        return "RAD-TEMP-" + Math.floor(Math.random() * 1000);
+    }
+}
+
+/* ============================================================
+   DICCIONARIO Y LÓGICA DEL INDEX (Sigue tu código normal)
+   ============================================================ */
+// ... aquí sigue tu DICCIONARIO_SIR y demás funciones
 const DICCIONARIO_SIR = {
     "1": { acto: "VENTA", tarifa: "CON CUANTIA", folios: "NO" },
     "2": { acto: "HIPOTECA", tarifa: "CON CUANTIA", folios: "NO" },
