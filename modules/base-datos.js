@@ -17,20 +17,28 @@ function generarRadicado() {
 
 // Función para guardar el trámite
 function guardarTramite(datos) {
-    const radicado = generarRadicado();
-    const paquete = {
-        ...datos,
-        radicado: radicado,
-        fechaSistema: new Date().toLocaleString()
-    };
+    try {
+        const radicado = generarRadicado();
+        
+        // Verificación de seguridad: si no hay datos, crear un paquete vacío
+        const paquete = {
+            solicitante: datos?.solicitante || "ANÓNIMO",
+            total: datos?.total || 0,
+            radicado: radicado,
+            fechaSistema: new Date().toLocaleString(),
+            ...datos
+        };
 
-    // Guardar en el almacenamiento del navegador (LocalStorage)
-    localStorage.setItem(radicado, JSON.stringify(paquete));
-    
-    // También guardamos una lista de índices para el historial
-    let historial = JSON.parse(localStorage.getItem('historial_snr')) || [];
-    historial.push({ radicado, solicitante: datos.solicitante, total: datos.total });
-    localStorage.setItem('historial_snr', JSON.stringify(historial));
+        localStorage.setItem(radicado, JSON.stringify(paquete));
+        
+        let historial = JSON.parse(localStorage.getItem('historial_snr')) || [];
+        historial.push({ radicado, solicitante: paquete.solicitante, total: paquete.total });
+        localStorage.setItem('historial_snr', JSON.stringify(historial));
 
-    return radicado;
+        return radicado;
+    } catch (e) {
+        console.error("Error crítico en base-datos.js:", e);
+        // Si todo falla, devolvemos un radicado de emergencia para que el PDF NO se detenga
+        return "ERROR-" + Math.floor(Math.random() * 1000);
+    }
 }
