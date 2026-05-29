@@ -147,6 +147,7 @@
 
 <!-- ================= Formulario Datos Inmueble y usuario ================= -->
 <main id="main">
+
     <div class="card">
     <h3>Información del Trámite</h3>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
@@ -266,6 +267,29 @@
         </div>
     </div>
 
+    <div class="card" style="margin-top: 30px; border-top: 4px solid #2980b9;">
+    <h3>Historial de Liquidaciones Hoy</h3>
+    <div style="margin-bottom: 15px; display: flex; gap: 10px;">
+        <input type="text" id="busquedaFiltro" placeholder="Buscar por Matrícula o Solicitante..." style="flex-grow: 1;">
+        <button class="btn" onclick="renderizarHistorial()" style="background: #34495e; color: white;">🔄 Actualizar</button>
+    </div>
+    
+    <div style="max-height: 300px; overflow-y: auto;">
+        <table style="font-size: 0.85rem;">
+            <thead>
+                <tr style="background: #ecf0f1;">
+                    <th>Radicado</th>
+                    <th>Matrícula</th>
+                    <th>Solicitante</th>
+                    <th>Total</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody id="tablaHistorial">
+                </tbody>
+        </table>
+    </div>
+</div>
 </main>
 
 <!----------------------------- LIBRERÍAS ------------------------------------------------>
@@ -875,6 +899,51 @@ function actualizarResumen() {
 ['txtSolicitante', 'txtMatriculaNum', 'txtEscritura', 'txtNotaria'].forEach(id => {
     document.getElementById(id).addEventListener('input', actualizarResumen);
 });
+
+// Función para mostrar el historial en la tabla
+function renderizarHistorial() {
+    const tablaH = document.getElementById('tablaHistorial');
+    const filtro = document.getElementById('busquedaFiltro').value.toUpperCase();
+    
+    // Obtenemos el historial del localStorage
+    const historial = JSON.parse(localStorage.getItem('historial_snr')) || [];
+    
+    tablaH.innerHTML = "";
+
+    // Invertimos el arreglo para que el último trámite aparezca de primero
+    historial.reverse().forEach(item => {
+        // Filtrar si el usuario está escribiendo algo
+        if (item.solicitante.toUpperCase().includes(filtro) || item.radicado.includes(filtro) || (item.matricula && item.matricula.includes(filtro))) {
+            
+            tablaH.innerHTML += `
+                <tr>
+                    <td><small>${item.radicado}</small></td>
+                    <td><b>040-${item.matricula || 'N/A'}</b></td>
+                    <td>${item.solicitante}</td>
+                    <td>$${(item.total || 0).toLocaleString()}</td>
+                    <td>
+                        <button onclick="verDetalle('${item.radicado}')" style="cursor:pointer; background:none; border:1px solid #2980b9; color:#2980b9; border-radius:4px; font-size:10px;">Ver</button>
+                    </td>
+                </tr>
+            `;
+        }
+    });
+}
+
+// Función para ver el detalle de un trámite guardado (puedes usarlo para recuperar datos)
+function verDetalle(radicado) {
+    const detalle = JSON.parse(localStorage.getItem(radicado));
+    if (detalle) {
+        alert(`Trámite: ${detalle.radicado}\nSolicitante: ${detalle.solicitante}\nTotal Liquidado: $${detalle.total.toLocaleString()}`);
+        console.log("Datos completos del turno:", detalle);
+    }
+}
+
+// Escuchar el buscador en tiempo real
+document.getElementById('busquedaFiltro').addEventListener('input', renderizarHistorial);
+
+// Cargar el historial apenas abra la página
+document.addEventListener('DOMContentLoaded', renderizarHistorial);
 </script>
 
 </body>
