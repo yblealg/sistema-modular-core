@@ -976,6 +976,7 @@ function renderizarHistorial() {
                     <td style="padding: 10px; font-weight: bold;">$${(registro.total || 0).toLocaleString()}</td>
                     <td style="padding: 10px;">
                          <button onclick="verTurnoGuardado('${registro.radicado}')" style="cursor:pointer; border:1px solid #2980b9; color:#2980b9; background:white; border-radius:4px;">Ver</button>
+                         <button onclick="eliminarRegistro('${registro.radicado}')" style="cursor:pointer; border:1px solid #e74c3c; color:#e74c3c; background:white; border-radius:4px; padding: 2px 8px; margin-left: 5px;">Borrar</button>
                     </td>
                 </tr>
             `;
@@ -1095,6 +1096,29 @@ function verTurnoGuardado(radicado) {
 
     // Abrir en pestaña nueva
     window.open(doc.output('bloburl'), '_blank');
+}
+
+//FUNCION PARA ELIMINAR DESDE EL HISTORIAL
+
+function eliminarRegistro(radicado) {
+    if (confirm(`¿Estás seguro de que deseas eliminar la liquidación ${radicado}?`)) {
+        // 1. Borrar el detalle completo del localStorage
+        localStorage.removeItem(radicado);
+
+        // 2. Borrarlo del índice del historial
+        let historial = JSON.parse(localStorage.getItem('historial_snr')) || [];
+        
+        // Filtramos la lista para dejar todos los registros MENOS el que queremos borrar
+        historial = historial.filter(item => item.radicado !== radicado);
+        
+        // 3. Guardamos la nueva lista actualizada
+        localStorage.setItem('historial_snr', JSON.stringify(historial));
+
+        // 4. Refrescar la tabla automáticamente
+        renderizarHistorial();
+        
+        alert("Registro eliminado correctamente.");
+    }
 }
 </script>
 
