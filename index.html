@@ -984,49 +984,61 @@ document.getElementById('busquedaFiltro').addEventListener('input', renderizarHi
 document.addEventListener('DOMContentLoaded', renderizarHistorial);
 
 function verTurnoGuardado(radicado) {
-    // 1. Buscar los datos en el disco duro (localStorage)
     const datos = JSON.parse(localStorage.getItem(radicado));
-
     if (!datos) {
-        alert("No se encontraron los datos de este radicado.");
+        alert("No se encontraron los datos.");
         return;
     }
 
-    // 2. Iniciar jsPDF para reconstruir el documento
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p', 'mm', 'letter');
     const marginTop = 30;
 
-    // --- 3. RECONSTRUCCIÓN DEL DISEÑO (Mismo estilo que exportarPDF) ---
-    // Encabezado
+    // --- 1. LOGO (Copiado de tu exportarPDF) ---
+    const imgLogo = document.getElementById('logoInst'); 
+    if (imgLogo) {
+        try {
+            doc.addImage(imgLogo, 'PNG', 10, marginTop - 18, 35, 25);
+        } catch (e) { console.warn("Logo no disponible en la re-impresión"); }
+    }
+
+    // --- 2. ENCABEZADO FIEL ---
     doc.setFontSize(14);
     doc.setFont(undefined, 'bold');
     doc.text("SUPERINTENDENCIA DE NOTARIADO Y REGISTRO", 50, marginTop - 8);
-    
+
     doc.setFontSize(10);
     doc.setFont(undefined, 'normal');
     doc.text("Oficina de Registro de Instrumentos Públicos de Barranquilla", 50, marginTop - 2);
-    
+
     doc.setFontSize(9);
-    doc.text(`Fecha Liq: ${datos.fechaLiq || '---'}`, 200, marginTop + 5, { align: 'right' });
+    doc.text(`Fecha de Liquidación: ${datos.fechaLiq || '---'}`, 200, marginTop + 5, { align: 'right' });
     doc.setFont(undefined, 'bold');
     doc.text(`RADICADO INTERNO: ${datos.radicado}`, 200, marginTop + 10, { align: 'right' });
     
     doc.setLineWidth(0.4);
-    doc.line(10, marginTop + 12, 200, marginTop + 12);
+    doc.line(10, marginTop + 12, 200, marginTop + 12); 
 
-    // Datos del interesado
+    // --- 3. BLOQUE INFORMATIVO ---
     let currentY = marginTop + 18;
     doc.setFontSize(10);
-    doc.text("COPIA DE LIQUIDACIÓN GUARDADA", 10, currentY);
+    doc.setFont(undefined, 'bold');
+    doc.text("DATOS DEL INTERESADO Y DEL INMUEBLE (COPIA)", 10, currentY);
+    
     doc.setFont(undefined, 'normal');
     doc.setFontSize(9);
     doc.text(`Solicitante: ${datos.solicitante}`, 10, currentY + 6);
     doc.text(`Identificación: ${datos.identificacion}`, 10, currentY + 11);
     doc.setFont(undefined, 'bold');
     doc.text(`MATRÍCULA INMOBILIARIA: 040-${datos.matricula}`, 10, currentY + 17);
+    
+    doc.text("REFERENCIA DEL DOCUMENTO", 120, currentY);
+    doc.setFont(undefined, 'normal');
+    doc.text(`Escritura No: ${datos.escritura}`, 120, currentY + 6);
+    doc.text(`Notaría/Origen: ${datos.notaria}`, 120, currentY + 11);
+    doc.text(`Fecha Documento: ${datos.fechaDoc}`, 120, currentY + 17);
 
-    // Tabla de Actos (Reconstruida con los datos guardados)
+    // --- 4. TABLA DE ACTOS (Usando tus mismos estilos) ---
     const body = datos.actos.map(item => [
         item.cod,
         item.acto,
@@ -1040,16 +1052,25 @@ function verTurnoGuardado(radicado) {
         body: body,
         theme: 'striped',
         headStyles: { fillColor: [44, 62, 80], halign: 'center' },
-        styles: { fontSize: 8 }
+        styles: { fontSize: 8, cellPadding: 2 },
+        columnStyles: { 3: { halign: 'right' } }
     });
 
-    // Total
+    // --- 5. TOTALES Y PIE DE PÁGINA ---
     const finalTableY = doc.lastAutoTable.finalY + 12;
     doc.setFontSize(12);
     doc.setFont(undefined, 'bold');
-    doc.text(`VALOR TOTAL: $ ${datos.total.toLocaleString()}`, 200, finalTableY, { align: 'right' });
+    doc.text(`VALOR TOTAL DERECHOS DE REGISTRO: $ ${datos.total.toLocaleString()}`, 200, finalTableY, { align: 'right' });
 
-    // 4. MOSTRAR EL PDF (En lugar de descargar, lo abre en pestaña nueva)
+    const footerY = 260; 
+    doc.setLineWidth(0.2);
+    doc.line(10, footerY - 5, 200, footerY - 5); 
+    doc.setFontSize(8);
+    doc.setFont(undefined, 'normal');
+    doc.text("Este documento es una copia de una liquidación guardada en el historial local.", 10, footerY);
+    doc.text(`Generado por: Yair B. Leal Guerra - Administrativo SNR Barranquilla`, 10, footerY + 5);
+
+    // Abrir en pestaña nueva
     window.open(doc.output('bloburl'), '_blank');
 }
 </script>
