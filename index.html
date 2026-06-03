@@ -982,6 +982,76 @@ document.getElementById('busquedaFiltro').addEventListener('input', renderizarHi
 
 // Cargar el historial apenas abra la página
 document.addEventListener('DOMContentLoaded', renderizarHistorial);
+
+function verTurnoGuardado(radicado) {
+    // 1. Buscar los datos en el disco duro (localStorage)
+    const datos = JSON.parse(localStorage.getItem(radicado));
+
+    if (!datos) {
+        alert("No se encontraron los datos de este radicado.");
+        return;
+    }
+
+    // 2. Iniciar jsPDF para reconstruir el documento
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'letter');
+    const marginTop = 30;
+
+    // --- 3. RECONSTRUCCIÓN DEL DISEÑO (Mismo estilo que exportarPDF) ---
+    // Encabezado
+    doc.setFontSize(14);
+    doc.setFont(undefined, 'bold');
+    doc.text("SUPERINTENDENCIA DE NOTARIADO Y REGISTRO", 50, marginTop - 8);
+    
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    doc.text("Oficina de Registro de Instrumentos Públicos de Barranquilla", 50, marginTop - 2);
+    
+    doc.setFontSize(9);
+    doc.text(`Fecha Liq: ${datos.fechaLiq || '---'}`, 200, marginTop + 5, { align: 'right' });
+    doc.setFont(undefined, 'bold');
+    doc.text(`RADICADO INTERNO: ${datos.radicado}`, 200, marginTop + 10, { align: 'right' });
+    
+    doc.setLineWidth(0.4);
+    doc.line(10, marginTop + 12, 200, marginTop + 12);
+
+    // Datos del interesado
+    let currentY = marginTop + 18;
+    doc.setFontSize(10);
+    doc.text("COPIA DE LIQUIDACIÓN GUARDADA", 10, currentY);
+    doc.setFont(undefined, 'normal');
+    doc.setFontSize(9);
+    doc.text(`Solicitante: ${datos.solicitante}`, 10, currentY + 6);
+    doc.text(`Identificación: ${datos.identificacion}`, 10, currentY + 11);
+    doc.setFont(undefined, 'bold');
+    doc.text(`MATRÍCULA INMOBILIARIA: 040-${datos.matricula}`, 10, currentY + 17);
+
+    // Tabla de Actos (Reconstruida con los datos guardados)
+    const body = datos.actos.map(item => [
+        item.cod,
+        item.acto,
+        item.base.toLocaleString(),
+        `$ ${item.total.toLocaleString()}`
+    ]);
+
+    doc.autoTable({
+        startY: currentY + 25,
+        head: [['Código', 'Acto / Concepto', 'Base / Cant', 'Total Item']],
+        body: body,
+        theme: 'striped',
+        headStyles: { fillColor: [44, 62, 80], halign: 'center' },
+        styles: { fontSize: 8 }
+    });
+
+    // Total
+    const finalTableY = doc.lastAutoTable.finalY + 12;
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'bold');
+    doc.text(`VALOR TOTAL: $ ${datos.total.toLocaleString()}`, 200, finalTableY, { align: 'right' });
+
+    // 4. MOSTRAR EL PDF (En lugar de descargar, lo abre en pestaña nueva)
+    window.open(doc.output('bloburl'), '_blank');
+}
 </script>
 
 </body>
