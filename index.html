@@ -765,15 +765,19 @@ function exportarPDF() {
         // ------------------------------------------------------------
     // === GUARDAR DETALLE COMPLETO PARA RE-IMPRESIÓN ===
 
-    // 1. Primero capturamos la fecha del input (esto debe ir antes del objeto)
-   
+     
+    // 1. Capturamos la fecha con un nombre ÚNICO para evitar errores
+    const fechaDeEstaLiquidacion = document.getElementById('fechaLiq').value;
     
     const detalleTurno = {
         ...datosParaGuardar,
         radicado: miRadicado,
-        fechaLiq: fechaHoy,
-        actos: JSON.parse(JSON.stringify(liquidacion)) // Copia exacta de los actos
+        fechaLiq: fechaDeEstaLiquidacion, // Guardamos el valor capturado
+        actos: JSON.parse(JSON.stringify(liquidacion)) 
     };
+
+    // Guardamos en el almacenamiento local
+    localStorage.setItem(miRadicado, JSON.stringify(detalleTurno));
     localStorage.setItem(miRadicado, JSON.stringify(detalleTurno));
     const { jsPDF } = window.jspdf;
     // Configurado específicamente para papel Carta (letter)
@@ -1015,7 +1019,9 @@ function verTurnoGuardado(radicado) {
     doc.setFont(undefined, 'normal');
     doc.text("Oficina de Registro de Instrumentos Públicos de Barranquilla", 50, marginTop - 2);
 
+    // Dentro de la función verTurnoGuardado
     doc.setFontSize(9);
+    // Aquí 'datos.fechaLiq' buscará lo que guardamos arriba
     doc.text(`Fecha de Liquidación: ${datos.fechaLiq || '---'}`, 200, marginTop + 5, { align: 'right' });
     doc.setFont(undefined, 'bold');
     doc.text(`RADICADO INTERNO: ${datos.radicado}`, 200, marginTop + 10, { align: 'right' });
