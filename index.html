@@ -932,16 +932,42 @@ document.addEventListener('DOMContentLoaded', () => {
 // [PASO 2] Pégalo aquí, junto a tus otras funciones
 function inicializarDatalist() {
     const datalist = document.getElementById('listaActos');
-    if (!datalist) return; // Seguridad por si acaso
+    if (!datalist) return; 
     datalist.innerHTML = ""; 
 
+    // Recorremos tu DICCIONARIO_SIR
     Object.keys(DICCIONARIO_SIR).forEach(codigo => {
-        const option = document.createElement('option');
-        option.value = DICCIONARIO_SIR[codigo].nombre;
-        datalist.appendChild(option);
+        const item = DICCIONARIO_SIR[codigo];
+        
+        // Verificamos que sea un acto válido y no un comentario de "INVALIDO"
+        if (item && item.acto) {
+            const option = document.createElement('option');
+            option.value = item.acto; // Aquí usamos .acto como definiste arriba
+            datalist.appendChild(option);
+        }
     });
 }
 
+document.getElementById('nombreActo').addEventListener('input', function(e) {
+    const nombreSeleccionado = e.target.value.toUpperCase();
+    
+    // Buscamos el código comparando con la propiedad .acto
+    const codigoEncontrado = Object.keys(DICCIONARIO_SIR).find(cod => 
+        DICCIONARIO_SIR[cod].acto === nombreSeleccionado
+    );
+
+    if (codigoEncontrado) {
+        const inputCod = document.getElementById('cod');
+        inputCod.value = codigoEncontrado;
+
+        // Disparamos eventos para que se activen tus cálculos de tarifa y folios
+        inputCod.dispatchEvent(new Event('input'));
+        inputCod.dispatchEvent(new Event('change'));
+    }
+});
+
+// IMPORTANTE: Llamar a la función al cargar el script
+inicializarDatalist();
 // ¡IMPORTANTE! Coloca esta línea suelta al final de tu script 
 // para que cargue los datos apenas se abra el liquidador
 inicializarDatalist();
