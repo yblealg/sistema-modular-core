@@ -217,7 +217,9 @@
 
             <div>
                 <label>Nombre del Acto</label>
-                <input type="text" id="nombreActo" disabled>
+                <input type="text" id="nombreActo" list="listaActos" placeholder="Seleccione o escriba..." onfocus="this.value=''">
+                
+                <datalist id="listaActos"></datalist> 
             </div>
 
             <div id="boxCuantia" style="visibility:hidden;">
@@ -924,7 +926,49 @@ document.addEventListener('DOMContentLoaded', () => {
     if (inputFecha) inputFecha.value = hoy;
 });
 //hasta aqui exportarPDF
+
+// ... Aquí puedes tener tus funciones anteriores ...
+
+// [PASO 2] Pégalo aquí, junto a tus otras funciones
+function inicializarDatalist() {
+    const datalist = document.getElementById('listaActos');
+    if (!datalist) return; // Seguridad por si acaso
+    datalist.innerHTML = ""; 
+
+    Object.keys(DICCIONARIO_SIR).forEach(codigo => {
+        const option = document.createElement('option');
+        option.value = DICCIONARIO_SIR[codigo].nombre;
+        datalist.appendChild(option);
+    });
+}
+
+// ¡IMPORTANTE! Coloca esta línea suelta al final de tu script 
+// para que cargue los datos apenas se abra el liquidador
+inicializarDatalist();
+
+// ... Viene de las líneas de arriba ...
+inicializarDatalist();
+
+// [PASO 3] Colócalo aquí abajo, libre de otras funciones
+document.getElementById('nombreActo').addEventListener('input', function(e) {
+    const nombreSeleccionado = e.target.value.toUpperCase();
+    
+    // Buscamos si el nombre existe en el diccionario
+    const codigoEncontrado = Object.keys(DICCIONARIO_SIR).find(cod => 
+        DICCIONARIO_SIR[cod].nombre === nombreSeleccionado
+    );
+
+    if (codigoEncontrado) {
+        const inputCod = document.getElementById('cod');
+        inputCod.value = codigoEncontrado;
+
+        // Esto activa tu lógica actual (mostrar folios o cuantía)
+        inputCod.dispatchEvent(new Event('input')); 
+        inputCod.dispatchEvent(new Event('change'));
+    }
+});
 // 2. Función para actualizar el resumen en tiempo real
+
 function actualizarResumen() {
     const resumen = document.getElementById('resumenTramite');
     const solicitante = document.getElementById('txtSolicitante').value;
