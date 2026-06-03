@@ -756,12 +756,25 @@ function exportarPDF() {
     // Llamamos a la función de base-datos.js para generar el radicado y guardar
     //const miRadicado = guardarTramite(datosParaGuardar);
     // const miRadicado = guardarTramite(datosParaGuardar); 
+    // --- REEMPLAZO DEL BLOQUE ALEATORIO POR INCREMENTAL ---
     const fecha = new Date();
     const anio = fecha.getFullYear();
-    const mes = fecha.getMonth() + 1; // Los meses en JS van de 0 a 11
-    const aleatorio = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    const mes = fecha.getMonth() + 1;
 
-    const miRadicado = `${anio}-040-${mes}-${aleatorio}`;
+    // 1. Intentar leer el último número usado, si no existe empezamos en 0
+    let contadorActual = parseInt(localStorage.getItem('contador_snr_registro')) || 0;
+    
+    // 2. Sumamos 1 para el nuevo turno
+    contadorActual++;
+    
+    // 3. Guardamos el nuevo valor para que el siguiente turno sepa por dónde vamos
+    localStorage.setItem('contador_snr_registro', contadorActual);
+
+    // 4. Lo convertimos a texto con 5 ceros (ejemplo: 00001)
+    const incremental = contadorActual.toString().padStart(5, '0');
+
+    // 5. Armamos el radicado final
+    const miRadicado = `${anio}-040-${mes}-${incremental}`;
         // ------------------------------------------------------------
     // === GUARDAR DETALLE COMPLETO PARA RE-IMPRESIÓN ===
 
