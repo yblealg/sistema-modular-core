@@ -764,6 +764,10 @@ function exportarPDF() {
     const miRadicado = `${anio}-040-${mes}-${aleatorio}`;
         // ------------------------------------------------------------
     // === GUARDAR DETALLE COMPLETO PARA RE-IMPRESIÓN ===
+
+    // 1. Primero capturamos la fecha del input (esto debe ir antes del objeto)
+   
+    
     const detalleTurno = {
         ...datosParaGuardar,
         radicado: miRadicado,
