@@ -1201,6 +1201,33 @@ function eliminarRegistro(radicado) {
         alert("Registro eliminado correctamente.");
     }
 }
+
+function cambiarVista(vista, evento) {
+    // 1. Apuntamos a las dos grandes secciones del área blanca
+    const seccionLiq = document.getElementById('seccion-liquidacion');
+    const seccionConsultas = document.getElementById('seccion-consultas');
+
+    // 2. Evaluamos cuál botón se presionó para mostrar u ocultar
+    if (vista === 'liquidacion') {
+        seccionLiq.style.display = 'block';       // Muestra todo el liquidador
+        seccionConsultas.style.display = 'none';   // Oculta el módulo de consultas
+    } else if (vista === 'consultas') {
+        seccionLiq.style.display = 'none';        // Oculta todo el liquidador
+        seccionConsultas.style.display = 'block';  // Muestra el módulo de consultas
+    }
+
+    // 3. Cambiamos la apariencia visual de los botones del menú superior
+    const botones = document.querySelectorAll('.btn-nav');
+    botones.forEach(btn => {
+        // Volvemos todos los botones al estado gris normal
+        btn.style.background = '#ecf0f1';
+        btn.style.color = '#2c3e50';
+    });
+
+    // 4. Pintamos de verde solo el botón al que le acabamos de dar clic
+    evento.currentTarget.style.background = '#27ae60';
+    evento.currentTarget.style.color = 'white';
+}
 </script>
 
 </body>
