@@ -152,150 +152,157 @@
         <button class="btn-nav" onclick="cambiarVista('consultas', event)" style="padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 5px; border: none; background: #ecf0f1; color: #2c3e50;">Consultas SIR</button>
     </div>
 
-    <div class="card">
-    <h3>Información del Trámite</h3>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-        
-        <div>
-            <div style="margin-bottom: 10px;">
-                <label>Nombre del Solicitante</label>
-                <input type="text" id="txtSolicitante" placeholder="Nombre completo o Razón Social">
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+    <div id="seccion-liquidacion">
+
+        <div class="card">
+            <h3>Información del Trámite</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                
                 <div>
-                    <label>Identificación (CC/NIT)</label>
-                    <input type="text" id="txtIdSolicitante">
+                    <div style="margin-bottom: 10px;">
+                        <label>Nombre del Solicitante</label>
+                        <input type="text" id="txtSolicitante" placeholder="Nombre completo o Razón Social">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div>
+                            <label>Identificación (CC/NIT)</label>
+                            <input type="text" id="txtIdSolicitante">
+                        </div>
+                        <div>
+                            <label>Matrícula Inmobiliaria</label>
+                            <div style="display: flex; align-items: center;">
+                                <span style="background: #eee; padding: 10px; border: 2px solid #dfe6e9; border-right: none; border-radius: 8px 0 0 8px; font-weight: bold; color: #555;">040-</span>
+                                <input type="number" id="txtMatriculaNum" style="border-radius: 0 8px 8px 0;" placeholder="Número">
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
                 <div>
-                    <label>Matrícula Inmobiliaria</label>
-                    <div style="display: flex; align-items: center;">
-                        <span style="background: #eee; padding: 10px; border: 2px solid #dfe6e9; border-right: none; border-radius: 8px 0 0 8px; font-weight: bold; color: #555;">040-</span>
-                        <input type="number" id="txtMatriculaNum" style="border-radius: 0 8px 8px 0;" placeholder="Número">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                        <div>
+                            <label>Fecha Liquidación (Hoy)</label>
+                            <input type="date" id="fechaLiq" disabled>
+                        </div>
+                        <div>
+                            <label>Fecha del Documento</label>
+                            <input type="date" id="fechaDoc">
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 10px;">
+                        <div>
+                            <label>No. Escritura</label>
+                            <input type="number" id="txtEscritura">
+                        </div>
+                        <div>
+                            <label>Notaría / Oficina Origen</label>
+                            <input type="text" id="txtNotaria" placeholder="Ej: Notaría 1 de Bquilla">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-                <div>
-                    <label>Fecha Liquidación (Hoy)</label>
-                    <input type="date" id="fechaLiq" disabled>
-                </div>
-                <div>
-                    <label>Fecha del Documento</label>
-                    <input type="date" id="fechaDoc">
-                </div>
+        <div id="resumenTramite" class="card" style="display: none; background: #f8f9fa; border-left: 5px solid var(--snr-blue); padding: 15px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; font-size: 0.9rem; color: var(--snr-blue);">
+                <div><b>Solicitante:</b> <span id="viewSolicitante"></span></div>
+                <div><b>Matrícula:</b> <span id="viewMatricula" style="font-weight: bold; color: #d35400;"></span></div>
+                <div><b>Documento:</b> <span id="viewDoc"></span></div>
             </div>
-            <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 10px;">
+        </div>
+
+        <div class="card">
+            <h3>Liquidador de Actos</h3>
+
+            <div class="grid-input">
                 <div>
-                    <label>No. Escritura</label>
-                    <input type="number" id="txtEscritura">
+                    <label>Código SIR</label>
+                    <input type="number" id="cod" autofocus>
                 </div>
+
                 <div>
-                    <label>Notaría / Oficina Origen</label>
-                    <input type="text" id="txtNotaria" placeholder="Ej: Notaría 1 de Bquilla">
+                    <label>Nombre del Acto</label>
+                    <input type="text" id="nombreActo" list="listaActos" placeholder="Seleccione o escriba..." onfocus="this.value=''">
+                    <datalist id="listaActos"></datalist> 
                 </div>
+
+                <div id="boxCuantia" style="visibility:hidden;">
+                    <label>Base Gravable</label>
+                    <input type="number" id="base" value="0">
+                </div>
+
+                <div id="boxFolios" style="display:none;">
+                    <label>Folios</label>
+                    <input type="number" id="folios" value="1">
+                </div>
+
+                <button class="btn btn-add" onclick="agregarActo()">Liquidar</button>
+
+                <button onclick="exportarPDF()" style="background:#2c3e50;color:white;padding:10px;border-radius:4px;">
+                    EXPORTAR PDF
+                </button>
+            </div>
+
+            <div style="margin-top:20px;border-top:1px solid #eee;padding-top:15px;">
+                <label>Certificados de Tradición</label><br>
+                <input type="number" id="cantCert" value="0" style="width:80px;">
+                <button class="btn btn-cert" onclick="agregarCert()">+ Añadir</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Acto</th>
+                        <th>Base / Cant</th>
+                        <th>Total</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="tabla"></tbody>
+            </table>
+
+            <div class="total-box">
+                <small style="color:white">TOTAL GENERAL</small><br>
+                <b id="vTotal">$ 0</b>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 30px; border-top: 4px solid #2980b9;">
+            <h3>Historial de Liquidaciones Hoy</h3>
+            <div style="margin-bottom: 15px; display: flex; gap: 10px;">
+                <input type="text" id="busquedaFiltro" placeholder="Buscar por Matrícula o Solicitante..." style="flex-grow: 1;">
+                <button class="btn" onclick="renderizarHistorial()" style="background: #34495e; color: white;">🔄 Actualizar</button>
+            </div>
+            
+            <div style="max-height: 300px; overflow-y: auto;">
+                <table style="font-size: 0.85rem;">
+                    <thead>
+                        <tr style="background: #ecf0f1;">
+                            <th>Radicado</th>
+                            <th>Matrícula</th>
+                            <th>Solicitante</th>
+                            <th>Total</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaHistorial"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div> <div id="seccion-consultas" style="display: none;">
+        <div class="card">
+            <h3>Módulo de Consultas SIR</h3>
+            <p style="color: #7f8c8d;">Área de trabajo vacía y lista para integrar buscadores o consultas de folios.</p>
+            <div style="padding: 40px; text-align: center; color: #bdc3c7; border: 2px dashed #eee; border-radius: 8px; margin-top: 15px;">
+                <span style="font-size: 1.2rem;">Contenido de Consultas Dinámicas</span>
             </div>
         </div>
     </div>
-</div>
 
-<div id="resumenTramite" class="card" style="display: none; background: #f8f9fa; border-left: 5px solid var(--snr-blue); padding: 15px;">
-    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; font-size: 0.9rem; color: var(--snr-blue);">
-        <div><b>Solicitante:</b> <span id="viewSolicitante"></span></div>
-        <div><b>Matrícula:</b> <span id="viewMatricula" style="font-weight: bold; color: #d35400;"></span></div>
-        <div><b>Documento:</b> <span id="viewDoc"></span></div>
-    </div>
-</div>
-    <!------------------- TABLA LIQUIDACION--------------------------------------->
-    <div class="card">
-        <h3>Liquidador de Actos</h3>
-
-        <div class="grid-input">
-
-            <div>
-                <label>Código SIR</label>
-                <input type="number" id="cod" autofocus>
-            </div>
-
-            <div>
-                <label>Nombre del Acto</label>
-                <input type="text" id="nombreActo" list="listaActos" placeholder="Seleccione o escriba..." onfocus="this.value=''">
-                
-                <datalist id="listaActos"></datalist> 
-            </div>
-
-            <div id="boxCuantia" style="visibility:hidden;">
-                <label>Base Gravable</label>
-                <input type="number" id="base" value="0">
-            </div>
-
-            <div id="boxFolios" style="display:none;">
-                <label>Folios</label>
-                <input type="number" id="folios" value="1">
-            </div>
-
-            <button class="btn btn-add" onclick="agregarActo()">Liquidar</button>
-
-            <button onclick="exportarPDF()" style="background:#2c3e50;color:white;padding:10px;border-radius:4px;">
-                EXPORTAR PDF
-            </button>
-        </div>
-
-        <!---------------- PANEL CERTIFICADOS ---------------------------->
-
-        <div style="margin-top:20px;border-top:1px solid #eee;padding-top:15px;">
-            <label>Certificados de Tradición</label><br>
-            <input type="number" id="cantCert" value="0" style="width:80px;">
-            <button class="btn btn-cert" onclick="agregarCert()">+ Añadir</button>
-        </div>
-    </div>
-
-    <!---------------------- TABLA -------------------------------------------------->
-    <div class="card">
-        <table>
-            <thead>
-                <tr>
-                    <th>Código</th>
-                    <th>Acto</th>
-                    <th>Base / Cant</th>
-                    <th>Total</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody id="tabla"></tbody>
-        </table>
-
-        <div class="total-box">
-            <small style="color:white">TOTAL GENERAL</small><br>
-            <b id="vTotal">$ 0</b>
-        </div>
-    </div>
-
-    <div class="card" style="margin-top: 30px; border-top: 4px solid #2980b9;">
-    <h3>Historial de Liquidaciones Hoy</h3>
-    <div style="margin-bottom: 15px; display: flex; gap: 10px;">
-        <input type="text" id="busquedaFiltro" placeholder="Buscar por Matrícula o Solicitante..." style="flex-grow: 1;">
-        <button class="btn" onclick="renderizarHistorial()" style="background: #34495e; color: white;">🔄 Actualizar</button>
-    </div>
-    
-    <div style="max-height: 300px; overflow-y: auto;">
-        <table style="font-size: 0.85rem;">
-            <thead>
-                <tr style="background: #ecf0f1;">
-                    <th>Radicado</th>
-                    <th>Matrícula</th>
-                    <th>Solicitante</th>
-                    <th>Total</th>
-                    <th>Acción</th>
-                </tr>
-            </thead>
-            <tbody id="tablaHistorial">
-                </tbody>
-        </table>
-    </div>
-</div>
 </main>
 
 <!----------------------------- LIBRERÍAS ------------------------------------------------>
