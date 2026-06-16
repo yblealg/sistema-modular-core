@@ -629,12 +629,12 @@ function agregarActo() {
         derechos = 0;
     }
 
-    // 3. LÓGICA DE TOTALES SIN 2% PARA EL 888
+    // 3. LÓGICA DE TOTALES EXCLUYENDO EL 2% PARA EL 888 Y EL 99
     let total;
     if (info.tarifa === "EXENTO" || (cod === "888" && cuantia === 0)) {
         total = 0;
-    } else if (cod === "888") {
-        total = derechos; // Valor neto
+    } else if (cod === "888" || cod === "99") { 
+        total = derechos; // <--- El folio adicional (99) ahora pasa directo con su valor neto, sin sumar el 2%
     } else {
         total = Math.ceil((derechos * 1.02) / 100) * 100;
     }
@@ -645,6 +645,9 @@ function agregarActo() {
         base: (info.tarifa === "CON CUANTIA" || cod === "888") ? cuantia : folios,
         total
     });
+    
+    // (Asegúrate de cerrar la función si te faltaba el renderizado de la tabla aquí abajo)
+}
 
     render();
     document.getElementById('base').value = "";
